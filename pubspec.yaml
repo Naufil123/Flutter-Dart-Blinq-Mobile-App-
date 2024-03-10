@@ -49,6 +49,9 @@ dependencies:
   shared_preferences: ^2.0.8 # for splash screen
   local_auth: ^2.0.0  # for biometric
   url_launcher: ^6.0.9 # for link to the url
+  firebase_core: ^2.24.2
+  firebase_messaging: ^14.7.19
+  flutter_secure_storage: ^9.0.0
 
 dev_dependencies:
   flutter_test:

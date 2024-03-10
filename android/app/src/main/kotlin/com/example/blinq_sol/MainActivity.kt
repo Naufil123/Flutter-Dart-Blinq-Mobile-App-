@@ -1,4 +1,4 @@
-package com.example.blinq_sol
+package pk.blinq.app
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 

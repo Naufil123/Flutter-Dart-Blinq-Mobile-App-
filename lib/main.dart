@@ -1,4 +1,8 @@
  // import 'package:blinq/web_view/webView.dart';
+import 'package:blinq_sol/appData/firebase_api.dart';
+import 'package:blinq_sol/firebase_options.dart';
+import 'package:blinq_sol/notification_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'auth/forgotPassword/forgotPassword.dart';
 import 'auth/forgotPassword/otp.dart';
@@ -22,16 +26,25 @@ import 'auth/forgotPassword/verification.dart';
 import 'home/Paidbill.dart';
 import 'home/dashBoard.dart';
 import 'home/AddBeneficiary.dart';
- void main() async {
+
+final navigatorKey = GlobalKey<NavigatorState>();
+
+Future<void> main() async {
    WidgetsFlutterBinding.ensureInitialized();
+   await Firebase.initializeApp(
+     options: DefaultFirebaseOptions.currentPlatform
+   );
+   await FirebaseApi().initNotifications();
+
+
    EasyLoading.init();
 
    SharedPreferences prefs = await SharedPreferences.getInstance();
    bool visitedSplash = prefs.getBool('visitedSplash') ?? false;
 
    runApp(MyApp(visitedSplash: visitedSplash));
- }
- class MyApp extends StatelessWidget {
+}
+class MyApp extends StatelessWidget {
    final bool visitedSplash;
    const MyApp({required this.visitedSplash, super.key});
    @override
@@ -67,6 +80,7 @@ import 'home/AddBeneficiary.dart';
         '/payvia': (context) => const Payvia(),
         '/add-beneficiary': (context) => const AddBeneficiary(),
         '/reg_otp': (context) => const Authotppage(),
+         '/notification-screen': (context) => const NotificationScreen(),
       },
        home: visitedSplash ? const Login() : const Screen1(),
     );

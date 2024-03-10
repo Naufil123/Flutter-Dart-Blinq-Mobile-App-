@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.blinq_sol.app-mergeDebugResources-29:/values-v26/values-v26.xml",
+            "outputFile": "pk.blinq.app-mergeDebugResources-35:/values-v26/values-v26.xml",
             "map": [
                 {
-                    "source": "/Users/atifnaseem/.gradle/caches/transforms-3/5e1ab9db4bfbf3ac403646091b989b87/transformed/appcompat-1.6.1/res/values-v26/values-v26.xml",
+                    "source": "/Users/atifnaseem/.gradle/caches/transforms-3/8f2a194f1b0decc2ed543d963b0ad4af/transformed/appcompat-1.6.1/res/values-v26/values-v26.xml",
                     "from": {
                         "startLines": "2,3,4,8,12,16",
                         "startColumns": "4,4,4,4,4,4",

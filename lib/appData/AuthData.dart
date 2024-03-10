@@ -1,5 +1,7 @@
 import 'dart:math';
+import 'package:blinq_sol/appData/firebase_api.dart';
 import 'package:crypto/crypto.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -293,12 +295,15 @@ class AuthData {
           Snacksbar.showErrorSnackBar(context, message);
         } else {
           Snacksbar.showSuccessSnackBar(context, message);
+
           if (responseBody.containsKey('token')) {
             String token = responseBody['token'];
             AuthData.token=token;
             print('Received token: $token');
 
+            // TODO: Send Device Firebase info to Server
           }
+
           Navigator.pushReplacementNamed(
             context,
             '/dashboard',
