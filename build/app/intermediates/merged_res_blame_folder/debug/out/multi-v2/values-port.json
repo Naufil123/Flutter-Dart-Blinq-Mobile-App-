@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "pk.blinq.app-mergeDebugResources-35:/values-port/values-port.xml",
+            "outputFile": "pk.blinq.app-mergeDebugResources-36:/values-port/values-port.xml",
             "map": [
                 {
                     "source": "/Users/atifnaseem/.gradle/caches/transforms-3/8f2a194f1b0decc2ed543d963b0ad4af/transformed/appcompat-1.6.1/res/values-port/values-port.xml",

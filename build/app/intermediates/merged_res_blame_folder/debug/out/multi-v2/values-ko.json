@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "pk.blinq.app-mergeDebugResources-35:/values-ko/values-ko.xml",
+            "outputFile": "pk.blinq.app-mergeDebugResources-36:/values-ko/values-ko.xml",
             "map": [
                 {
                     "source": "/Users/atifnaseem/.gradle/caches/transforms-3/1aa791b2ebed78f9b7a725cb53d747ae/transformed/biometric-1.1.0/res/values-ko/values-ko.xml",

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "pk.blinq.app-mergeDebugResources-35:/values-si/values-si.xml",
+            "outputFile": "pk.blinq.app-mergeDebugResources-36:/values-si/values-si.xml",
             "map": [
                 {
                     "source": "/Users/atifnaseem/.gradle/caches/transforms-3/60ca90aa4e5c3fae9b99a1b64dc44b8c/transformed/jetified-play-services-base-18.0.1/res/values-si/values.xml",
