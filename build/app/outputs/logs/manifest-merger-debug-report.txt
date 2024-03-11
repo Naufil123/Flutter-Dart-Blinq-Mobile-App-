@@ -72,7 +72,9 @@ MERGED from [:flutter_file_downloader] /Users/atifnaseem/Downloads/Projects/blin
 MERGED from [:flutter_secure_storage] /Users/atifnaseem/Downloads/Projects/blinq/build/flutter_secure_storage/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-11:12
 MERGED from [:webview_flutter_android] /Users/atifnaseem/Downloads/Projects/blinq/build/webview_flutter_android/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
 MERGED from [:shared_preferences_android] /Users/atifnaseem/Downloads/Projects/blinq/build/shared_preferences_android/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:device_info] /Users/atifnaseem/Downloads/Projects/blinq/build/device_info/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
 MERGED from [:open_file] /Users/atifnaseem/Downloads/Projects/blinq/build/open_file/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-23:12
+MERGED from [:device_info_plus] /Users/atifnaseem/Downloads/Projects/blinq/build/device_info_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
 MERGED from [com.google.firebase:firebase-iid:21.1.0] /Users/atifnaseem/.gradle/caches/transforms-3/709a122ab4f6ff1c266218b0c27cb5cb/transformed/jetified-firebase-iid-21.1.0/AndroidManifest.xml:17:1-38:12
 MERGED from [com.google.firebase:firebase-messaging:23.4.1] /Users/atifnaseem/.gradle/caches/transforms-3/c126b1cd67ed010ed58c57300e9bc1a5/transformed/jetified-firebase-messaging-23.4.1/AndroidManifest.xml:17:1-66:12
 MERGED from [com.google.firebase:firebase-installations:17.2.0] /Users/atifnaseem/.gradle/caches/transforms-3/9c1bf89f27c30a473a6feab4bf66f45b/transformed/jetified-firebase-installations-17.2.0/AndroidManifest.xml:2:1-24:12
@@ -203,8 +205,12 @@ MERGED from [:webview_flutter_android] /Users/atifnaseem/Downloads/Projects/blin
 MERGED from [:webview_flutter_android] /Users/atifnaseem/Downloads/Projects/blinq/build/webview_flutter_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:shared_preferences_android] /Users/atifnaseem/Downloads/Projects/blinq/build/shared_preferences_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:shared_preferences_android] /Users/atifnaseem/Downloads/Projects/blinq/build/shared_preferences_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:device_info] /Users/atifnaseem/Downloads/Projects/blinq/build/device_info/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:device_info] /Users/atifnaseem/Downloads/Projects/blinq/build/device_info/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [:open_file] /Users/atifnaseem/Downloads/Projects/blinq/build/open_file/intermediates/merged_manifest/debug/AndroidManifest.xml:6:5-8:41
 MERGED from [:open_file] /Users/atifnaseem/Downloads/Projects/blinq/build/open_file/intermediates/merged_manifest/debug/AndroidManifest.xml:6:5-8:41
+MERGED from [:device_info_plus] /Users/atifnaseem/Downloads/Projects/blinq/build/device_info_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:device_info_plus] /Users/atifnaseem/Downloads/Projects/blinq/build/device_info_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
 MERGED from [com.google.firebase:firebase-iid:21.1.0] /Users/atifnaseem/.gradle/caches/transforms-3/709a122ab4f6ff1c266218b0c27cb5cb/transformed/jetified-firebase-iid-21.1.0/AndroidManifest.xml:20:5-44
 MERGED from [com.google.firebase:firebase-iid:21.1.0] /Users/atifnaseem/.gradle/caches/transforms-3/709a122ab4f6ff1c266218b0c27cb5cb/transformed/jetified-firebase-iid-21.1.0/AndroidManifest.xml:20:5-44
 MERGED from [com.google.firebase:firebase-messaging:23.4.1] /Users/atifnaseem/.gradle/caches/transforms-3/c126b1cd67ed010ed58c57300e9bc1a5/transformed/jetified-firebase-messaging-23.4.1/AndroidManifest.xml:20:5-44

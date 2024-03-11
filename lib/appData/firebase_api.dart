@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:blinq_sol/main.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -86,18 +87,24 @@ class FirebaseApi {
 }
 
   Future<void> handleBackgroundMessage(RemoteMessage message) async {
-    print('Title: ${message.notification?.title}');
-    print('Body: ${message.notification?.body}');
-    print('Payload: ${message.data}');
+    if (kDebugMode) {
+      print('message: $message');
+      print('hm Title: ${message.notification?.title}');
+      print('Body: ${message.notification?.body}');
+      print('Payload: ${message.data}');
+    }
     initPushNotifications();
   }
 
   Future<void> handleMessage(RemoteMessage? message)async {
     if(message == null) return;
 
-    print('hm Title: ${message.notification?.title}');
-    print('Body: ${message.notification?.body}');
-    print('Payload: ${message.data}');
+    if (kDebugMode) {
+      print('message: $message');
+      print('hm Title: ${message.notification?.title}');
+      print('Body: ${message.notification?.body}');
+      print('Payload: ${message.data}');
+    }
     navigatorKey.currentState?.pushReplacementNamed('/notification-screen', arguments: message);
   }
 

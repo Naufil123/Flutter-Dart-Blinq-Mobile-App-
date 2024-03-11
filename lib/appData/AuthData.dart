@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:blinq_sol/appData/firebase_api.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -10,6 +12,12 @@ import 'ApiData.dart';
 import 'ThemeStyle.dart';
 import 'dailogbox.dart';
 import 'local_auth.dart';
+//import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:device_marketing_names/device_marketing_names.dart';
+
+
 class AuthData {
   static String apiKey = 'S905TAcU9bD29e48rnCJAsQpwQAqBnZd52OhDZt3BBIvQQQq2j5Uv0wXhstzWfno4jugilAOMXZy2dOzcMlCxw7oU2qAgSZP+G6N3AxD3Lw=';
   static String token ="";
@@ -28,6 +36,11 @@ class AuthData {
   static String regMobileNumber = "";
   static String isBenificary = "";
   static String Consumer="";
+
+  static const String fcmDeviceRegister = '${siteUrl}api/v2/mobile/user-device/firebase-id/insert';
+
+
+
   static Future<void> regUser(username, email, confirmPin, fullName, context) async {
     Map<String, String> headers = {
       'api_key': apiKey,
@@ -301,7 +314,8 @@ class AuthData {
             AuthData.token=token;
             print('Received token: $token');
 
-            // TODO: Send Device Firebase info to Server
+            // Send Device Firebase info to Server
+            await addFirebaseDevice();
           }
 
           Navigator.pushReplacementNamed(
@@ -462,5 +476,83 @@ class AuthData {
       throw("Error Fetching Unpaid Bill Api!");
     }
   }
+
+
+
+
+
+  /// ***** ***** ***** ***** ***** ***** ***** *****
+  /// Firebase Notification - Save Device Info - Begin
+  /// ***** ***** ***** ***** ***** ***** ***** *****
+  static Future<void> addFirebaseDevice() async {
+    // get FCM Token
+    const storage = FlutterSecureStorage();
+    String? mobileDeviceId = await storage.read(key: 'fcmToken');
+
+    // get Device Name
+    final deviceNames = DeviceMarketingNames();
+    final singleDeviceName = await deviceNames.getSingleName();
+
+    var deviceType = "";
+    var deviceOS = "";
+    var deviceSerial = "...";
+
+    // get Device Type
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if(Platform.isAndroid){
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      deviceType = '${androidInfo.manufacturer} ${androidInfo.model}';
+      deviceOS = androidInfo.version.release;
+    }else if(Platform.isIOS){
+      IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
+      deviceType = iosDeviceInfo.systemVersion;
+      deviceOS = iosDeviceInfo.systemName;
+    }
+
+    Map<String, String> headers = {
+      'token': token,
+      'Content-Type': 'application/json',
+    };
+    Map<String, dynamic> data = {
+      "mobile_device_id": mobileDeviceId,
+      "device_name": singleDeviceName,
+      "device_type": deviceType,
+      "device_os": deviceOS,
+      "device_serial_number": deviceSerial
+    };
+
+    print(headers);
+    print(data);
+
+    try {
+      final response = await http.post(
+        Uri.parse(AuthData.fcmDeviceRegister),
+        headers: headers,
+        body: jsonEncode(data),
+      );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = json.decode(response.body);
+        final String status = responseBody['status'];
+        final String message = responseBody['message'];
+        if (kDebugMode) {
+          print(status);
+          print(message);
+        }
+
+        if (status == 'failure') {
+
+        } else {
+
+        }
+      }
+    } catch (error) {
+      if (kDebugMode) {
+        print('Error during API call: $error');
+      }
+    }
+  }
+  /// ***** ***** ***** ***** ***** ***** ***** *****
+  /// Firebase Notification - Save Device Info - End
+  /// ***** ***** ***** ***** ***** ***** ***** *****
 
 }
