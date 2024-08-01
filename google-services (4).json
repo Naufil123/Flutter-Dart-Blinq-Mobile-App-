@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "84780312511",
+    "project_id": "blinq-e5be3",
+    "storage_bucket": "blinq-e5be3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:84780312511:android:7ee3d8fb6e331b0e91630a",
+        "android_client_info": {
+          "package_name": "pk.blinq.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "84780312511-1b7broih42sim4lomlr0fkjt7ujl169s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pk.blinq.app",
+            "certificate_hash": "c3f910097cbfb921c585b1cabf19f94b0b13f18e"
+          }
+        },
+        {
+          "client_id": "84780312511-cdltg5400200hiq6uujufugr6ansocot.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0sz9_cPIo-o0GuJqJpAQy1xVLW8QoYIA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "84780312511-cdltg5400200hiq6uujufugr6ansocot.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "84780312511-4ntmkjv4tig5oof5u7g73ckg0d5t2o41.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "pk.blinq.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

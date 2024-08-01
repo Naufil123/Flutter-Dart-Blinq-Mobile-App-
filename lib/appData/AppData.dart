@@ -1,12 +1,5 @@
 import 'package:flutter/material.dart';
 
-
-// Yaha flutter mai hum apna jitna scret dtat hota app.data k ander class bana kr rakhte hain
-// Usy phr hum agy kahi call krna ho krte hain
-// yaha per faida ye hot ahai k 50 files k ander 1 code likha ho to usy change krne k liye 50 files mai ni jana hoga
-// sirf yahi sy krlainge
-// python alag hai ye maine frhan bhai ko flutter ka bataya hai
-
 abstract class AppData {
   static const TextStyle progressHeader = TextStyle(
       fontFamily: 'Montserrat',

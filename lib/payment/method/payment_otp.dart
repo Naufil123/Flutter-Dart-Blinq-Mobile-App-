@@ -208,12 +208,12 @@ class _PaymentOtpPageState extends State<PaymentOtpPage> {
               padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
               child: TextButton(
                 onPressed: isButtonEnabled() ? () async {
-                  paymentSucess.showCustomDialog(
-                    context,
-                    '',
-                    '',// Replace with the actual content
-                    screenWidth,
-                  );
+                  // paymentSucess.showCustomDialog(
+                  //   context,
+                  //   '',
+                  //   '',// Replace with the actual content
+                  //   screenWidth,
+                  // );
                 } : null,
                 style: TextButton.styleFrom(
                   backgroundColor: isButtonEnabled()

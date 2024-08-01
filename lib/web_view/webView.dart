@@ -21,6 +21,7 @@ class _webViewState extends State<webView> {
   String currentURL = '';
   bool cancelTimer = false;
   bool webUrlAccess = false;
+  String paymentCode="";
   static String parseURLDynamic = 'https://www.google.com.pk/';
 
 
@@ -32,7 +33,7 @@ class _webViewState extends State<webView> {
   void initState(){
     setState(() {
       parseURLDynamic = widget.paramSearchedInvoices["payment_rights"]["web_view_url"];
-
+      paymentCode = widget.paramSearchedInvoices["invoice_data"]["payment_code"];
       WebController.loadRequest(Uri.parse(parseURLDynamic));
       Timer.periodic(
           Duration(seconds: 1), (Timer t) {
@@ -46,11 +47,13 @@ class _webViewState extends State<webView> {
     });
     super.initState();
   }
-
+  Future<void> webveiwcancel() async {
+    Navigator.pushReplacementNamed(context, '/pay',arguments:paymentCode);
+   }
 
   Future<void> checkUrl() async {
     currentURL = (await WebController.currentUrl())!;
-    print(currentURL + " is current webview url;");
+    print("$currentURL is current web-view url;");
     print("In Progress...");
 
     final queryStringData =  Uri.parse(currentURL);
@@ -71,13 +74,7 @@ class _webViewState extends State<webView> {
         cancelTimer=true;
       });
     }
-    // if(currentURL!=parseURLDynamic){
-    //   print("Transaction success");
-    //   // _showMyDialog();
-    //   setState(() {
-    //     cancelTimer=true;
-    //   });
-    // }
+
     print(parseURLDynamic + " is Dynamic webview url;");
   }
 
@@ -98,7 +95,7 @@ class _webViewState extends State<webView> {
             children: [
               queryParameter=="Success" ? Icon(Icons.check_circle,color: Colors.green,size: 50,) :  Icon(Icons.sms_failed,color: Colors.red,size: 50,),
               Container(height: 15,),
-              queryParameter=="Success" ? Text('Transaction Successful!') : Text('Transaction Failed!'),
+              queryParameter=="Success" ? Text('Transaction Successful!') : Text('Transaction Cancelled!'),
             ],
           ),
           content: SingleChildScrollView(
@@ -113,15 +110,15 @@ class _webViewState extends State<webView> {
           actions: <Widget>[
             queryParameter=="Success" ?
             TextButton(
-              child: const Text('View Paid Invoices'),
+              child: const Text('View Paid Invoice'),
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/paid');
+                Navigator.pushReplacementNamed(context, '/pay',arguments:paymentCode);
               },
             )
                 : TextButton(
               child: const Text('Back'),
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/pay');
+                webveiwcancel();
               },
             )
           ],

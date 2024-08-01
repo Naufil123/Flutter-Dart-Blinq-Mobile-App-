@@ -12,7 +12,20 @@
           "package_name": "pk.blinq.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "84780312511-hqt0jk7upl7lr8jl77n10ono4jm8uv62.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pk.blinq.app",
+            "certificate_hash": "845ef1425e2588abdf444ededf2a0d82c82ca93e"
+          }
+        },
+        {
+          "client_id": "84780312511-cdltg5400200hiq6uujufugr6ansocot.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyD0sz9_cPIo-o0GuJqJpAQy1xVLW8QoYIA"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "84780312511-cdltg5400200hiq6uujufugr6ansocot.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "84780312511-4ntmkjv4tig5oof5u7g73ckg0d5t2o41.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "pk.blinq.app"
+              }
+            }
+          ]
         }
       }
     }

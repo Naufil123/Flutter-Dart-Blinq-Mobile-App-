@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "pk.blinq.app-mergeDebugResources-36:/values-v23/values-v23.xml",
+            "outputFile": "pk.blinq.app-mergeDebugResources-38:/values-v23/values-v23.xml",
             "map": [
                 {
-                    "source": "/Users/atifnaseem/.gradle/caches/transforms-3/8f2a194f1b0decc2ed543d963b0ad4af/transformed/appcompat-1.6.1/res/values-v23/values-v23.xml",
+                    "source": "C:\\Users\\HP\\.gradle\\caches\\transforms-3\\8f2a194f1b0decc2ed543d963b0ad4af\\transformed\\appcompat-1.6.1\\res\\values-v23\\values-v23.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,20,34,35,36,39,43,44,45,46",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4",

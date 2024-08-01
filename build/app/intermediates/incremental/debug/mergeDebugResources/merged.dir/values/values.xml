@@ -241,7 +241,7 @@
     <dimen name="notification_main_column_padding_top">10dp</dimen>
     <dimen name="notification_media_narrow_margin">@dimen/notification_content_margin_start</dimen>
     <dimen name="notification_right_icon_size">16dp</dimen>
-    <dimen name="notification_right_side_padding_top">2dp</dimen>
+    <dimen name="notification_right_side_padding_top">4dp</dimen>
     <dimen name="notification_small_icon_background_padding">3dp</dimen>
     <dimen name="notification_small_icon_size_as_large">24dp</dimen>
     <dimen name="notification_subtext_size">13sp</dimen>
@@ -1508,6 +1508,7 @@
     </style>
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
+        <item name="android:windowDisablePreview">true</item>
     </style>
     <style name="Platform.AppCompat" parent="android:Theme.Holo">
         <item name="android:windowNoTitle">true</item>
@@ -1832,6 +1833,14 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+    <style name="Theme.PlayCore.Transparent" parent="android:Theme">
+<item name="android:windowIsTranslucent">true</item>
+<item name="android:windowBackground">@android:color/transparent</item>
+<item name="android:windowContentOverlay">@null</item>
+<item name="android:windowNoTitle">true</item>
+<item name="android:windowIsFloating">true</item>
+<item name="android:backgroundDimEnabled">false</item>
+</style>
     <style name="ThemeOverlay.AppCompat" parent="Base.ThemeOverlay.AppCompat"/>
     <style name="ThemeOverlay.AppCompat.ActionBar" parent="Base.ThemeOverlay.AppCompat.ActionBar"/>
     <style name="ThemeOverlay.AppCompat.Dark" parent="Base.ThemeOverlay.AppCompat.Dark"/>

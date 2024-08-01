@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="pk.blinq.app"
-    android:versionCode="1"
-    android:versionName="1.0.0" >
+    android:versionCode="38"
+    android:versionName="1.3.06" >
 
     <uses-sdk
-        android:minSdkVersion="19"
-        android:targetSdkVersion="33" />
+        android:minSdkVersion="21"
+        android:targetSdkVersion="34" />
     <!--
          The INTERNET permission is required for development. Specifically,
          the Flutter tool needs it to communicate with the running application
@@ -14,25 +14,29 @@
     -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- Permissions options for the `notification` group -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- Permissions options for the `notification` group -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.VIBRATE" /> <!-- Required by older versions of Google Play services to create IID tokens -->
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" /> <!-- suppress DeprecatedClassUsageInspection -->
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" /> <!-- suppress DeprecatedClassUsageInspection -->
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 
     <permission
         android:name="pk.blinq.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="pk.blinq.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+    <uses-permission android:name="pk.blinq.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" /> <!-- Permission will be merged into the manifest of the hosting app. -->
+    <!-- Is required to launch foreground extraction service for targetSdkVersion 28+. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name="android.app.Application"
         android:appComponentFactory="androidx.core.app.CoreComponentFactory"
         android:debuggable="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="blinq_sol" >
+        android:label="Blinq" >
         <activity
             android:name="pk.blinq.app.MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
@@ -72,30 +76,12 @@
             android:value="2" />
 
         <service
-            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingBackgroundService"
-            android:exported="false"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-        <service
-            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingService"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-
-        <receiver
-            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND" >
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-            </intent-filter>
-        </receiver>
-
-        <service
             android:name="com.google.firebase.components.ComponentDiscoveryService"
             android:directBootAware="true"
             android:exported="false" >
+            <meta-data
+                android:name="com.google.firebase.components:io.flutter.plugins.firebase.auth.FlutterFirebaseAuthRegistrar"
+                android:value="com.google.firebase.components.ComponentRegistrar" />
             <meta-data
                 android:name="com.google.firebase.components:io.flutter.plugins.firebase.messaging.FlutterFirebaseAppRegistrar"
                 android:value="com.google.firebase.components.ComponentRegistrar" />
@@ -103,7 +89,7 @@
                 android:name="com.google.firebase.components:io.flutter.plugins.firebase.core.FlutterFirebaseCoreRegistrar"
                 android:value="com.google.firebase.components.ComponentRegistrar" />
             <meta-data
-                android:name="com.google.firebase.components:com.google.firebase.iid.Registrar"
+                android:name="com.google.firebase.components:com.google.firebase.auth.FirebaseAuthRegistrar"
                 android:value="com.google.firebase.components.ComponentRegistrar" />
             <meta-data
                 android:name="com.google.firebase.components:com.google.firebase.messaging.FirebaseMessagingKtxRegistrar"
@@ -127,18 +113,32 @@
                 android:name="com.google.firebase.components:com.google.firebase.datatransport.TransportRegistrar"
                 android:value="com.google.firebase.components.ComponentRegistrar" />
         </service>
+        <service
+            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingBackgroundService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </receiver>
 
         <provider
             android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingInitProvider"
             android:authorities="pk.blinq.app.flutterfirebasemessaginginitprovider"
             android:exported="false"
             android:initOrder="99" />
-
-        <activity
-            android:name="io.flutter.plugins.urllauncher.WebViewActivity"
-            android:exported="false"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
-
         <provider
             android:name="com.crazecoder.openfile.FileProvider"
             android:authorities="pk.blinq.app.fileProvider.com.crazecoder.openfile"
@@ -148,6 +148,47 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
+
+        <activity
+            android:name="io.flutter.plugins.urllauncher.WebViewActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+        <activity
+            android:name="com.google.firebase.auth.internal.GenericIdpActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="firebase.auth"
+                    android:path="/"
+                    android:scheme="genericidp" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.google.firebase.auth.internal.RecaptchaActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="firebase.auth"
+                    android:path="/"
+                    android:scheme="recaptcha" />
+            </intent-filter>
+        </activity>
 
         <receiver
             android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver"
@@ -181,6 +222,28 @@
             android:exported="false"
             android:initOrder="100" />
 
+        <uses-library
+            android:name="androidx.window.extensions"
+            android:required="false" />
+        <uses-library
+            android:name="androidx.window.sidecar"
+            android:required="false" />
+
+        <activity
+            android:name="com.google.android.gms.auth.api.signin.internal.SignInHubActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <!--
+            Service handling Google Sign-In user revocation. For apps that do not integrate with
+            Google Sign-In, this service will never be started.
+        -->
+        <service
+            android:name="com.google.android.gms.auth.api.signin.RevocationBoundService"
+            android:exported="true"
+            android:permission="com.google.android.gms.auth.api.signin.permission.REVOCATION_NOTIFICATION"
+            android:visibleToInstantApps="true" />
+
         <activity
             android:name="com.google.android.gms.common.api.GoogleApiActivity"
             android:exported="false"
@@ -204,13 +267,6 @@
                 android:name="androidx.profileinstaller.ProfileInstallerInitializer"
                 android:value="androidx.startup" />
         </provider>
-
-        <uses-library
-            android:name="androidx.window.extensions"
-            android:required="false" />
-        <uses-library
-            android:name="androidx.window.sidecar"
-            android:required="false" />
 
         <service
             android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery"
@@ -246,7 +302,31 @@
             <intent-filter>
                 <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
             </intent-filter>
-        </receiver>
+        </receiver> <!-- The activities will be merged into the manifest of the hosting app. -->
+        <activity
+            android:name="com.google.android.play.core.missingsplits.PlayCoreMissingSplitsActivity"
+            android:enabled="false"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:process=":playcore_missing_splits_activity"
+            android:stateNotNeeded="true" />
+        <activity
+            android:name="com.google.android.play.core.common.PlayCoreDialogWrapperActivity"
+            android:exported="false"
+            android:stateNotNeeded="true"
+            android:theme="@style/Theme.PlayCore.Transparent" /> <!-- The services will be merged into the manifest of the hosting app. -->
+        <service
+            android:name="com.google.android.play.core.assetpacks.AssetPackExtractionService"
+            android:enabled="false"
+            android:exported="true" >
+            <meta-data
+                android:name="com.google.android.play.core.assetpacks.versionCode"
+                android:value="11003" />
+        </service>
+        <service
+            android:name="com.google.android.play.core.assetpacks.ExtractionForegroundService"
+            android:enabled="false"
+            android:exported="false" />
     </application>
 
 </manifest>

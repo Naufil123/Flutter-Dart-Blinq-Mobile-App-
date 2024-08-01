@@ -5,19 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-const siteUrl = "https://staging-mobileapi.blinq.pk/";
+
+// Live URL
+//     const siteUrl = "https://mobileapi.blinq.pk/";
+
+// Staging URL
+   const siteUrl = "https://staging-mobileapi.blinq.pk/";
 
 class ApiData {
-  // static String appToken = 'ITbMBHXvYgCbNgmjL2NiXIeszYfraxaWN9CtYTb2eNjROTqn/67NQcRN7kGjsi50lhl0iKZpnGP8mZLesDqxAud61ZCARcYvKcGJpfWknQ0=';
+
   static String appToken = AuthData.token;
-  static String regMobileNumber = '';
-  static String regFullName = '';
-  static String paymentCred = '';
+   static String paymentCred = '';
   static String WalletOrder_BLINQ_TRANS_REF_ID = '';
-
   static Color validatorColor = Colors.black;
-
-
   static const String getTop4Announcement = '${siteUrl}api/v2/mobile/announcement/get/by/top/4';
   static const String getPaidInvoicesV2 = '${siteUrl}api/v2/mobile/invoices/get/unpaid';
   static const String getUserProfile = '${siteUrl}api/v2/mobile/user/get/by/username';
@@ -27,29 +27,29 @@ class ApiData {
 
 
   //Old API Data
-  static const String authTokenRequest = '${siteUrl}api/mobile/auth';
-  static const String getUnpaidInvoices = '${siteUrl}api/mobile/invoices/get/unpaid';
-  static const String checkFullConsumerCode = '${siteUrl}api/mobile/consumer/check/fullconsumercode';
-  static const String createUser = '${siteUrl}api/mobile/user/create';
-  static const String userCodeVerificationInsert = '${siteUrl}api/mobile/user/code/verification/insert';
-  static const String userCodeVerificationVerifyCode = '${siteUrl}api/mobile/user/code/verification/verifycode';
-  static const String userCodeVerificationGetCode = '${siteUrl}api/mobile/user/code/verification/get/code';
-  static const String userResetPin = '${siteUrl}api/mobile/user/reset/pin';
-  static const String systemLogging = '${siteUrl}api/mobile/sys/log';
-  static const String apiRequestLogging = '${siteUrl}api/mobile/api-request/log';
-  static const String apiResponseLogging = '${siteUrl}api/mobile/api-response/log';
-  static const String getUserBeneficiaryCsv = '${siteUrl}api/user/beneficiary/get/all/csv';
-  static const String getUserBeneficiaryById = '${siteUrl}api/user/beneficiary/get/by/id';
-  static const String createUserBeneficiary = '${siteUrl}api/user/beneficiary/create';
-  static const String userAuditLogging = '${siteUrl}api/mobile/user/audit/log';
-  static const String loginStatus = '${siteUrl}api/user/login/status';
-  static const String getAppConfigValueByName = '${siteUrl}api/mobile/appconfig/get/by/config/name';
-  static const String sendEmail = '${siteUrl}api/mobile/send/email';
-  static const String sendSMS = '${siteUrl}api/mobile/send/sms';
-  static const String doWallet = '${siteUrl}blinq/api/wallet/payment/rest/service/v1/dw';
-  static const String getInvoiceStatus = '${siteUrl}blinq/api/payment/rest/service/v2/gs';
-  static const String accountValidation = '${siteUrl}blinq/api/account/payment/rest/service/v1/cav';
-  static const String doCard = '${siteUrl}blinq/api/card/payment/rest/service/v1/vm';
+  // static const String authTokenRequest = '${siteUrl}api/mobile/auth';
+  // static const String getUnpaidInvoices = '${siteUrl}api/mobile/invoices/get/unpaid';
+  // static const String checkFullConsumerCode = '${siteUrl}api/mobile/consumer/check/fullconsumercode';
+  // static const String createUser = '${siteUrl}api/mobile/user/create';
+  // static const String userCodeVerificationInsert = '${siteUrl}api/mobile/user/code/verification/insert';
+  // static const String userCodeVerificationVerifyCode = '${siteUrl}api/mobile/user/code/verification/verifycode';
+  // static const String userCodeVerificationGetCode = '${siteUrl}api/mobile/user/code/verification/get/code';
+  // static const String userResetPin = '${siteUrl}api/mobile/user/reset/pin';
+  // static const String systemLogging = '${siteUrl}api/mobile/sys/log';
+  // static const String apiRequestLogging = '${siteUrl}api/mobile/api-request/log';
+  // static const String apiResponseLogging = '${siteUrl}api/mobile/api-response/log';
+  // static const String getUserBeneficiaryCsv = '${siteUrl}api/user/beneficiary/get/all/csv';
+  // static const String getUserBeneficiaryById = '${siteUrl}api/user/beneficiary/get/by/id';
+  // static const String createUserBeneficiary = '${siteUrl}api/user/beneficiary/create';
+  // static const String userAuditLogging = '${siteUrl}api/mobile/user/audit/log';
+  // static const String loginStatus = '${siteUrl}api/user/login/status';
+  // static const String getAppConfigValueByName = '${siteUrl}api/mobile/appconfig/get/by/config/name';
+  // static const String sendEmail = '${siteUrl}api/mobile/send/email';
+  // static const String sendSMS = '${siteUrl}api/mobile/send/sms';
+  // static const String doWallet = '${siteUrl}blinq/api/wallet/payment/rest/service/v1/dw';
+  // static const String getInvoiceStatus = '${siteUrl}blinq/api/payment/rest/service/v2/gs';
+  // static const String accountValidation = '${siteUrl}blinq/api/account/payment/rest/service/v1/cav';
+  // static const String doCard = '${siteUrl}blinq/api/card/payment/rest/service/v1/vm';
 
   static Map<String, dynamic> directAccountDebitData = {
     "BILL_ID": "",
@@ -63,7 +63,7 @@ class ApiData {
     "ACC_BANK_MNEMONIC": "",
     "ACC_NUMBER": "",
     "CNIC": "",
-    "RETURN_URL": "https://staging-ipg.blinq.pk/Home/Payinvoice"
+    "RETURN_URL": "https://ipg.blinq.pk/Home/Payinvoice"
   };
 
   // Account PAYMENT Data
@@ -118,7 +118,7 @@ class ApiData {
     "WALLET_NUMBER": "",
     "CNIC": "",
     "WALLET_EMAIL": "",
-    "RETURN_URL": "https://staging-ipg.blinq.pk/Home/Payinvoice"
+    "RETURN_URL": "https://ipg.blinq.pk/Home/Payinvoice"
   };
 
 
@@ -144,26 +144,7 @@ class ApiData {
     }
   }
 
- /* static Future<http.StreamedResponse> fetchAuthTokenRequest() async {
-    var headers = {
-      'Content-Type': 'application/json'
-    };
-    var request = http.Request('POST', Uri.parse(authTokenRequest));
-    request.body = json.encode({
-      "ClientID": "PbrnYUCLjtziLSs",
-      "ClientSecret": "4OIuks1Dwrl2S6U"
-    });
-    request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
-    appToken = response.headers['token']!;
-    if (response.statusCode == 200) {
-      return response;
-    }
-    else {
-      throw("Unable to fetch AuthToken Request! Error: ${response.statusCode}");
-    }
-  }*/
 
   static Future<Map<String, dynamic>> getAllSearchedInvoices(searchId) async {
     var headers = {
@@ -191,7 +172,7 @@ class ApiData {
 
   static Future<List<dynamic>> fetchGetTop4Announcement() async {
     var headers = {
-      'token': appToken,
+      'token': AuthData.token,
       'Content-Type': 'application/json'
     };
     final response = await http.post(
@@ -200,7 +181,7 @@ class ApiData {
     );
     if (response.statusCode == 200) {
       var data =  jsonDecode(response.body);
-      print(data);
+      // print(data);
       return data['announcement_list'];
     }
     else {
@@ -282,7 +263,7 @@ class ApiData {
       'credentials': paymentCred,
       'Content-Type': 'application/json'
     };
-    var request = http.Request('POST', Uri.parse('https://staging-payments.blinq.pk/blinq/api/account/payment/rest/service/v1/cav'));
+    var request = http.Request('POST', Uri.parse('https://payments.blinq.pk/blinq/api/account/payment/rest/service/v1/cav'));
     request.body = json.encode(directAccountDebitData);
     request.headers.addAll(headers);
 
@@ -304,7 +285,7 @@ class ApiData {
       'credentials': paymentCred,
       'Content-Type': 'application/json'
     };
-    var request = http.Request('POST', Uri.parse('https://staging-payments.blinq.pk/blinq/api/account/payment/rest/service/v1/initiate/transaction'));
+    var request = http.Request('POST', Uri.parse('https://payments.blinq.pk/blinq/api/account/payment/rest/service/v1/initiate/transaction'));
     request.body = json.encode(doAccountPayment);
     request.headers.addAll(headers);
 
@@ -326,7 +307,7 @@ class ApiData {
       'credentials': paymentCred,
       'Content-Type': 'application/json'
     };
-    var request = http.Request('POST', Uri.parse('https://staging-payments.blinq.pk/blinq/api/account/payment/rest/service/v1/cavresend'));
+    var request = http.Request('POST', Uri.parse('https://payments.blinq.pk/blinq/api/account/payment/rest/service/v1/cavresend'));
     request.body = json.encode(doAccountPaymentResendOtpData);
     request.headers.addAll(headers);
 
@@ -348,7 +329,7 @@ class ApiData {
       'credentials': paymentCred,
       'Content-Type': 'application/json'
     };
-    var request = http.Request('POST', Uri.parse('https://staging-payments.blinq.pk/blinq/api/wallet/payment/rest/service/v1/dw'));
+    var request = http.Request('POST', Uri.parse('https://payments.blinq.pk/blinq/api/wallet/payment/rest/service/v1/dw'));
     request.body = json.encode(doWalletJazzCashData);
     request.headers.addAll(headers);
 
@@ -370,7 +351,7 @@ class ApiData {
       'credentials': paymentCred,
       'Content-Type': 'application/json'
     };
-    var request = http.Request('POST', Uri.parse('https://staging-payments.blinq.pk/blinq/api/payment/rest/service/v2/gs'));
+    var request = http.Request('POST', Uri.parse('https://payments.blinq.pk/blinq/api/payment/rest/service/v2/gs'));
     request.body = json.encode({
       "BLINQ_TRANS_REF_ID": WalletOrder_BLINQ_TRANS_REF_ID,
       "PAY_VIA": "BLINQ_WALLET"

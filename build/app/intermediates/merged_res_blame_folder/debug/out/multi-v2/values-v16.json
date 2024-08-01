@@ -1,20 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "pk.blinq.app-mergeDebugResources-36:/values-v16/values-v16.xml",
+            "outputFile": "pk.blinq.app-mergeDebugResources-38:/values-v16/values-v16.xml",
             "map": [
                 {
-                    "source": "/Users/atifnaseem/.gradle/caches/transforms-3/34e69993957e6d229c33e93090824e88/transformed/core-1.10.1/res/values-v16/values-v16.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "65",
-                        "endOffsets": "116"
-                    }
-                },
-                {
-                    "source": "/Users/atifnaseem/.gradle/caches/transforms-3/8f2a194f1b0decc2ed543d963b0ad4af/transformed/appcompat-1.6.1/res/values-v16/values-v16.xml",
+                    "source": "C:\\Users\\HP\\.gradle\\caches\\transforms-3\\8f2a194f1b0decc2ed543d963b0ad4af\\transformed\\appcompat-1.6.1\\res\\values-v16\\values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -22,14 +12,6 @@
                         "endLines": "5",
                         "endColumns": "12",
                         "endOffsets": "223"
-                    },
-                    "to": {
-                        "startLines": "3",
-                        "startColumns": "4",
-                        "startOffsets": "121",
-                        "endLines": "6",
-                        "endColumns": "12",
-                        "endOffsets": "289"
                     }
                 }
             ]

@@ -2,20 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:timer_count_down/timer_count_down.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import '../../Controller/Network_Conectivity.dart';
 import '../../appData/ApiData.dart';
 import '../../appData/ThemeStyle.dart';
-import '../../appData/dailogbox.dart';
 import '../../appData/masking.dart';
-import '../../home/ProfileSection.dart';
-import 'package:flutter_file_downloader/flutter_file_downloader.dart';
-import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:flutterme_credit_card/flutterme_credit_card.dart';
-import 'dart:async';
-import 'dart:io';
-
 import 'OtpTransaction.dart';
 
 class TransactionScreen extends StatefulWidget {
@@ -87,12 +79,21 @@ class _TransactionScreenState extends State<TransactionScreen> {
       generateBankList();
     }
 
-    // listen to state changes within the form field controllers
+
     number.addListener(() => setState(() {}));
     validThru.addListener(() => setState(() {}));
     cvv.addListener(() => setState(() {}));
     holder.addListener(() => setState(() {}));
+
   }
+
+
+  @override
+  void dispose() {
+    Get.find<NetworkController>().unregisterPageReloadCallback('/unpaid');
+    super.dispose();
+  }
+
 
   @override
   void didUpdateWidget(covariant TransactionScreen oldWidget) {
@@ -124,232 +125,11 @@ class _TransactionScreenState extends State<TransactionScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            // Row(
-                            //   children: [
-                            //     Stack(
-                            //       children: [
-                            //         Image.asset(
-                            //           'assets/images/Ellipse3.png',
-                            //           width: screenWidth / 6,
-                            //           height: screenHeight * 0.1,
-                            //         ),
-                            //         Positioned(
-                            //           top: screenHeight * 0.04,
-                            //           left: 0,
-                            //           right: 0,
-                            //           child: const Center(
-                            //             child: Text(
-                            //               'NN',
-                            //               style: ThemeTextStyle.roboto,
-                            //             ),
-                            //           ),
-                            //         ),
-                            //       ],
-                            //     ),
-                            //     Column(
-                            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            //       crossAxisAlignment: CrossAxisAlignment.start,
-                            //       children: [
-                            //         Padding(
-                            //           padding: EdgeInsets.only(bottom: screenHeight * 0.004),
-                            //           child: Text(
-                            //             'Good Morning',
-                            //             style: ThemeTextStyle.good1.copyWith(fontSize: 12),
-                            //           ),
-                            //         ),
-                            //
-                            //
-                            //         const Text('Assalam Walaikum',
-                            //           style: ThemeTextStyle.good2,
-                            //         ),
-                            //       ],
-                            //     ),
-                            //   ],
-                            // ),
-                            // Row(
-                            //   children: [
-                            //     IconButton(
-                            //       onPressed: () {
-                            //         // _showDialog3(context);
-                            //       },
-                            //       icon: Image.asset(
-                            //         'assets/images/help.png',
-                            //         width: screenWidth * 0.1,
-                            //         height: screenWidth * 0.1,
-                            //       ),
-                            //     ),
-                            //   ],
-                            // ),
+
                           ],
                         ),
                       ),
 
-                      // Profile Section
-                      // ProfileSection(),
-
-                      //Card Details Screen
-                      // Container(
-                      //   margin: EdgeInsets.only(top: 35),
-                      //   width: screenWidth,
-                      //   child: Row(
-                      //     mainAxisAlignment: MainAxisAlignment.start,
-                      //     children: [
-                      //       Text("Card Details",style: TextStyle(fontSize: 15,color: Colors.black,fontWeight: FontWeight.w500),),
-                      //     ],
-                      //   ),
-                      // ),
-                      // Column(
-                      //   children: [
-                      //     Padding(
-                      //       padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      //       child: Form(
-                      //         child: Container(
-                      //           width: screenWidth,
-                      //           child: Column(
-                      //             crossAxisAlignment: CrossAxisAlignment.center,
-                      //             children: [
-                      //               Container(
-                      //                 width: screenWidth,
-                      //                 child: FMCreditCard(
-                      //                   color: Colors.deepPurple,
-                      //                   number: number.text,
-                      //                   numberMaskType: FMMaskType.first6last2,
-                      //                   cvv: cvv.text,
-                      //                   cvvMaskType: FMMaskType.full,
-                      //                   validThru: validThru.text,
-                      //                   validThruMaskType: FMMaskType.none,
-                      //                   holder: holder.text,
-                      //                 ),
-                      //               ),
-                      //               Container(
-                      //                 margin: const EdgeInsets.all(10),
-                      //                 child: Form(
-                      //                   key: formKey,
-                      //                   child: Column(
-                      //                     children: [
-                      //                       FMHolderField(
-                      //                         controller: holder,
-                      //                         cursorColor: Color(0xff000000),
-                      //                         decoration: inputDecoration(
-                      //                           labelText: "Card Holder",
-                      //                           hintText: "John Doe",
-                      //                         ),
-                      //                       ),
-                      //                       const SizedBox(height: 30),
-                      //                       FMNumberField(
-                      //                         controller: number,
-                      //                         cursorColor: Color(0xff000000),
-                      //                         decoration: inputDecoration(
-                      //                           labelText: "Card Number",
-                      //                           hintText: "0000 0000 0000 0000",
-                      //                         ),
-                      //                       ),
-                      //                       const SizedBox(height: 30),
-                      //                       Row(
-                      //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //                         children: [
-                      //                           Flexible(
-                      //                             child: FMValidThruField(
-                      //                               controller: validThru,
-                      //                               cursorColor: Color(0xff000000),
-                      //                               decoration: const InputDecoration(
-                      //                                 focusedBorder: OutlineInputBorder(
-                      //                                   borderSide: BorderSide(
-                      //                                       color: GeneralThemeStyle.button, width: 1.0),
-                      //                                 ),
-                      //                               enabledBorder: OutlineInputBorder(
-                      //                                 borderRadius: BorderRadius.all(Radius.circular(8)),
-                      //                                 borderSide: BorderSide(
-                      //                                     color: GeneralThemeStyle.output, width: 1.0
-                      //                                 ),
-                      //                               ),
-                      //                                 border: OutlineInputBorder(),
-                      //                                 labelStyle: TextStyle(color: Color(0xFF000000)),
-                      //                                 labelText: "Valid Thru",
-                      //                                 hintText: "****",
-                      //                             ),
-                      //                             ),
-                      //                           ),
-                      //                           const SizedBox(width: 10),
-                      //                           Flexible(
-                      //                             child: FMCvvField(
-                      //                               controller: cvv,
-                      //                               cursorColor: Color(0xff000000),
-                      //                               decoration: inputDecoration(
-                      //                                 labelText: "CVV",
-                      //                                 hintText: "***",
-                      //                               ),
-                      //                             ),
-                      //                           ),
-                      //                         ],
-                      //                       )
-                      //                     ],
-                      //                   ),
-                      //                 ),
-                      //               ),
-                      //               const SizedBox(height: 30),
-                      //               Container(
-                      //                 width: screenWidth,
-                      //                 padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                      //                 child: TextButton(
-                      //                   onPressed: () {
-                      //                     if (formKey.currentState!.validate()) {
-                      //                       Map<String,dynamic> cardInfo = {
-                      //                         "holder": holder.text,
-                      //                         "number": number.text,
-                      //                         "validThru": validThru.text,
-                      //                         "cvv": cvv.text,
-                      //                       };
-                      //                       print(cardInfo);
-                      //                     }
-                      //                   },
-                      //                   style: TextButton.styleFrom(
-                      //                     backgroundColor: GeneralThemeStyle.button,
-                      //                     shape: RoundedRectangleBorder(
-                      //                       borderRadius: BorderRadius.circular(40.0),
-                      //                     ),
-                      //                   ),
-                      //                   child: Padding(
-                      //                     padding: const EdgeInsets.all(8.0),
-                      //                     child: Text(
-                      //                       'Pay Bill',
-                      //                       style: ThemeTextStyle.detailPara.copyWith(color: Colors.white),
-                      //                     ),
-                      //                   ),
-                      //                 ),
-                      //               ),
-                      //               Container(
-                      //                 width: screenWidth,
-                      //                 padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                      //                 child: TextButton(
-                      //                   onPressed: () {
-                      //                     Navigator.pop(context);
-                      //                   },
-                      //                   style: TextButton.styleFrom(
-                      //                     backgroundColor: Color(0x99000000),
-                      //                     shape: RoundedRectangleBorder(
-                      //                       borderRadius: BorderRadius.circular(40.0),
-                      //                     ),
-                      //                   ),
-                      //                   child: Padding(
-                      //                     padding: const EdgeInsets.all(8.0),
-                      //                     child: Text(
-                      //                       'Back',
-                      //                       style: ThemeTextStyle.detailPara.copyWith(color: Colors.white),
-                      //                     ),
-                      //                   ),
-                      //                 ),
-                      //               ),
-                      //             ],
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //     Container(
-                      //       height: 100,
-                      //     ),
-                      //   ],
-                      // ),
 
                       if(widget.paramSearchedInvoices["routeKey"]=="DirectAccountDebit")
                         Column(
@@ -370,7 +150,14 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                       ),
                                     ),
                                     child: ListTile(
-                                      leading: Icon(Icons.currency_rupee,color: Color(0xffEE6724),size: 30),
+                                      leading: const Text(
+                                        '\u20A8', // Unicode character for the Pakistani Rupee symbol
+                                        style: TextStyle(
+                                          color: Color(0xffEE6724),
+                                          fontSize: 20,
+                                        ),
+                                      ),
+
                                       title: const Text(
                                         'Total Payable Amount',
                                         style: TextStyle(
@@ -382,9 +169,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                         ),
                                       ),
                                       subtitle: Text(
-                                        widget.paramSearchedInvoices["transaction_charges"]["account_payable_amount"].toString(),
+                                       widget.paramSearchedInvoices["transaction_charges"]["account_payable_amount"].toString(),
                                         style: ThemeTextStyle.searchInvoiceListInfo,
                                       ),
+
                                       selected: true,
                                       onTap: () async {
 
@@ -399,7 +187,13 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                       ),
                                     ),
                                     child: ListTile(
-                                      leading: Icon(Icons.currency_rupee,color: Color(0xffEE6724),size: 30),
+                                      leading: const Text(
+                                        '\u20A8', // Unicode character for the Pakistani Rupee symbol
+                                        style: TextStyle(
+                                          color: Color(0xffEE6724),
+                                          fontSize: 20,
+                                        ),
+                                      ),
                                       title: const Text(
                                         'Invoice Amount',
                                         style: TextStyle(
@@ -411,7 +205,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                         ),
                                       ),
                                       subtitle: Text(
-                                        widget.paramSearchedInvoices["transaction_charges"]["invoice_amount"].toString(),
+                                         widget.paramSearchedInvoices["transaction_charges"]["invoice_amount"].toString(),
                                         style: ThemeTextStyle.searchInvoiceListInfo,
                                       ),
                                       selected: true,
@@ -420,35 +214,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                       },
                                     ),
                                   ),
-                                  Container(
-                                    width: screenWidth,
-                                    decoration: BoxDecoration(
-                                      border: Border(
-                                        bottom: BorderSide(color: Color(0x30000000),width: 1),
-                                      ),
-                                    ),
-                                    child: ListTile(
-                                      leading: Icon(Icons.currency_rupee,color: Color(0xffEE6724),size: 30),
-                                      title: const Text(
-                                        'Debit Account Charges',
-                                        style: TextStyle(
-                                          fontFamily: 'Inter',
-                                          color:  Color(0x80000000),
-                                          fontSize: 14,
-                                          height: 1.7,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      subtitle: Text(
-                                        widget.paramSearchedInvoices["transaction_charges"]["account_charges"].toString(),
-                                        style: ThemeTextStyle.searchInvoiceListInfo,
-                                      ),
-                                      selected: true,
-                                      onTap: () async {
 
-                                      },
-                                    ),
-                                  ),
                                   Container(
                                     margin: EdgeInsets.symmetric(vertical: 0,horizontal: 0),
                                     width: screenWidth,
@@ -462,10 +228,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Text(
-                                                'Please Select Bank',
-                                                style: ThemeTextStyle.generalSubHeading4.copyWith(fontSize: 16),
-                                              ),
+                                              // Text(
+                                              //   'Please Select Bank',
+                                              //   style: ThemeTextStyle.generalSubHeading4.copyWith(fontSize: 16),
+                                              // ),
                                               Container(
                                                 width: screenWidth,
                                                 height: 52.0,
@@ -510,10 +276,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Text(
-                                                'Account Number',
-                                                style: ThemeTextStyle.generalSubHeading4.copyWith(fontSize: 16),
-                                              ),
+                                              // Text(
+                                              //   'Account Number',
+                                              //   style: ThemeTextStyle.generalSubHeading4.copyWith(fontSize: 16),
+                                              // ),
                                               Padding(
                                                 padding: const EdgeInsets.fromLTRB(0, 05, 0, 18),
                                                 child: SizedBox(
@@ -522,7 +288,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                                   child: TextFormField(
                                                     controller: accountNumberController,
                                                     keyboardType: TextInputType.number,
+                                                    inputFormatters:[Account],
                                                     decoration: InputDecoration(
+                                                      labelText: 'Account Number',
                                                       focusedBorder: const OutlineInputBorder(
                                                         borderSide: BorderSide(color: GeneralThemeStyle.button, width: 1.0),
                                                       ),
@@ -544,10 +312,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Text(
-                                                'CNIC',
-                                                style: ThemeTextStyle.generalSubHeading4.copyWith(fontSize: 16),
-                                              ),
+                                              // Text(
+                                              //   'CNIC',
+                                              //   style: ThemeTextStyle.generalSubHeading4.copyWith(fontSize: 16),
+                                              // ),
                                               Padding(
                                                 padding: const EdgeInsets.fromLTRB(0, 05, 0, 18),
                                                 child: SizedBox(
@@ -556,7 +324,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                                   child: TextFormField(
                                                     controller: cnicController,
                                                     keyboardType: TextInputType.number,
+                                                    inputFormatters:[CNIC],
                                                     decoration: InputDecoration(
+                                                      labelText: 'CNIC',
                                                       focusedBorder: const OutlineInputBorder(
                                                         borderSide: BorderSide(color: GeneralThemeStyle.button, width: 1.0),
                                                       ),
@@ -625,10 +395,19 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                               });
                                               if(selectedBankMnemonicKey=="Select Bank Name" || accountNumberController.text == "" || cnicController.text == ""){
                                                 setState(() {
-                                                  ErrorSendingOtp="One or more fields above is empty or Not Selected!";
+                                                  Snacksbar.showErrorSnackBar(
+                                                      context, "One or more fields above is empty or Not Selected!");
+                                                  // ErrorSendingOtp="One or more fields above is empty or Not Selected!";
                                                   spinner=false;
                                                 });
-                                              }else {
+                                              }else if (widget.paramSearchedInvoices["transaction_charges"]["account_payable_amount"]-  widget.paramSearchedInvoices["transaction_charges"]["account_charges"]<="0"){
+                                                setState(() {
+                                                  Snacksbar.showErrorSnackBar(
+                                                      context, "Could not Proceed request");
+                                                  spinner=false;
+                                                });
+                                              }
+                                              else {
                                                 setState(() {
                                                   ErrorSendingOtp="";
                                                 });
@@ -667,7 +446,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
                                                 respPaymentApi = resp_Data;
                                                 setState(() {
                                                   if(respPaymentApi['status']=="failure"){
-                                                    ErrorSendingOtp=respPaymentApi['message'];
+                                                    // ErrorSendingOtp=respPaymentApi['message'];
+                                                    Snacksbar.showErrorSnackBar(
+                                                        context,respPaymentApi['message']);
                                                   }
                                                   if(respPaymentApi['status']=="success"){
                                                     print(respPaymentApi);
@@ -766,27 +547,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
   }
 }
 
-
-// decoration: const InputDecoration(
-//   labelText: 'Search Invoices',
-//   focusedBorder: OutlineInputBorder(
-//     borderSide: BorderSide(
-//     color: GeneralThemeStyle.button, width: 1.0),
-//   ),
-//   enabledBorder: OutlineInputBorder(
-//     borderRadius: BorderRadius.only(
-//     topLeft: Radius.circular(10),
-//     topRight: Radius.circular(0),
-//     bottomLeft: Radius.circular(10),
-//     bottomRight: Radius.circular(0)
-//   ),
-//   borderSide: BorderSide(
-//     color: GeneralThemeStyle.output, width: 1.0),
-//   ),
-//   labelStyle: TextStyle(
-//     color: Colors.grey,
-//   ),
-// ),
 
 
 InputDecoration inputDecoration({

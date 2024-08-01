@@ -375,12 +375,12 @@ class _CreditDebitState extends State<CreditDebit> {
               padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
               child: TextButton(
                 onPressed: () {
-                  paymentSucess.showCustomDialog(
-                    context,
-                    '',
-                    '',// Replace with the actual content
-                    screenWidth,
-                  );
+                  // paymentSucess.showCustomDialog(
+                  //   context,
+                  //   '',
+                  //   '',// Replace with the actual content
+                  //   screenWidth,
+                  // );
                 },
 
                 style: TextButton.styleFrom(

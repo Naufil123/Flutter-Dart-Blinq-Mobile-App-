@@ -709,6 +709,7 @@ drawable notification_bg_low_pressed
 drawable notification_bg_normal
 drawable notification_bg_normal_pressed
 drawable notification_icon_background
+drawable notification_oversize_large_icon_bg
 drawable notification_template_icon_bg
 drawable notification_template_icon_low_bg
 drawable notification_tile_bg
@@ -808,6 +809,7 @@ id default_activity_button
 id dialog_button
 id disableHome
 id edit_query
+id edit_text_id
 id end
 id end_padder
 id expand_activities_button
@@ -821,6 +823,7 @@ id forever
 id fragment_container_view_tag
 id go_to_setting_description
 id group_divider
+id hide_ime_id
 id home
 id homeAsUp
 id icon
@@ -968,6 +971,8 @@ layout browser_actions_context_menu_row
 layout custom_dialog
 layout fingerprint_dialog_layout
 layout go_to_setting
+layout ime_base_split_test_activity
+layout ime_secondary_split_test_activity
 layout notification_action
 layout notification_action_tombstone
 layout notification_media_action
@@ -1335,6 +1340,7 @@ style Theme_AppCompat_Light_Dialog_MinWidth
 style Theme_AppCompat_Light_DialogWhenLarge
 style Theme_AppCompat_Light_NoActionBar
 style Theme_AppCompat_NoActionBar
+style Theme_PlayCore_Transparent
 style ThemeOverlay_AppCompat
 style ThemeOverlay_AppCompat_ActionBar
 style ThemeOverlay_AppCompat_Dark

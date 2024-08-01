@@ -1,851 +1,611 @@
+import 'dart:async';
+
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:intl/intl.dart';
 import 'package:blinq_sol/appData/AuthData.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import '../Controller/Network_Conectivity.dart';
 import '../appData/ThemeStyle.dart';
 import '../appData/dailogbox.dart';
+import '../appData/masking.dart';
 import 'NavigationBar.dart';
-import 'ProfileSection.dart';
 
-class Unpaid extends StatefulWidget {
-  const Unpaid({super.key});
+
+class Unpaid  extends StatefulWidget {
+  const Unpaid ({super.key});
+
   @override
   _UnpaidState createState() => _UnpaidState();
 }
-class _UnpaidState extends State<Unpaid> {
+
+class _UnpaidState extends State<Unpaid > {
   bool notification = true;
   String imgNotifyUrl = "assets/images/Notification.png";
-  List<dynamic> unpaidBill = [];
+  List<dynamic> UnpaidBill  = [];
   bool spinner = true;
+  List<dynamic> filteredUnpaidBill = [];
 
-  Future<List<dynamic>> fetchUnpaidBill() async {
-    unpaidBill = await AuthData.fetchGetUnpaidBill();
-    print(unpaidBill);
-    setState(() {
-      spinner=false;
-    });
-    return unpaidBill;
-  }
+
+
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     fetchUnpaidBill();
+    Get.find<NetworkController>().registerPageReloadCallback('/unpaid', _reloadPage);
   }
 
-  void _showDialog2(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-
-    Notification3.showAlertDialog(
-      context,
-      'Successful!',
-      'Your ID has been verified \nsuccessfully!',
-      screenWidth,
-    );
-  }
-  void _showDialog3(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-
-    FAQ.showAlertDialog(
-      context,
-      'Successful!',
-      'Your ID has been verified \nsuccessfully!',
-      screenWidth,
-    );
-  }
   @override
-  void didUpdateWidget(covariant Unpaid oldWidget) {
+  void dispose() {
+    Get.find<NetworkController>().unregisterPageReloadCallback('/unpaid');
+    super.dispose();
+  }
+
+  void _reloadPage() {
+
+    fetchUnpaidBill();
+  }
+  final TextEditingController Search = TextEditingController();
+
+  Future<List<dynamic>> fetchUnpaidBill() async {
+    Completer<bool> showDialogCompleter = Completer<bool>();
+    void refreshunPaid(BuildContext context) {
+      showDialogCompleter = Completer<bool>();
+
+      Navigator.pushReplacementNamed(context, '/unpaid');
+    }
+
+    Future.delayed(Duration(seconds: AuthData.timer), () {
+      if (spinner && !showDialogCompleter.isCompleted) {
+        showDialogCompleter.complete(true);
+        reload_Dailough(context, "", "",refreshunPaid);
+      }
+    });
+    UnpaidBill = await AuthData.fetchGetUnpaidBill();
+    if (!showDialogCompleter.isCompleted) {
+      showDialogCompleter.complete(false);
+    }
+
+    setState(() {
+      spinner = false;
+    });
+
+    return UnpaidBill;
+  }
+
+
+
+
+
+  @override
+  void didUpdateWidget(covariant Unpaid  oldWidget) {
     super.didUpdateWidget(oldWidget);
     print("didUpdateWidget: notification = $notification");
   }
+  void filterUnpaidBill(String query) {
+    setState(() {
+      if (query.isNotEmpty){
+        filteredUnpaidBill = UnpaidBill.where((bill) {
+          final lowerCaseQuery = query.toLowerCase();
+          final customerName = bill['customer_name']?.toString().toLowerCase() ?? '';
+          final paymentCode = bill['payment_code']?.toString().toLowerCase() ?? '';
+          final ConsumerCode = bill['full_consumer_code']?.toString().toLowerCase() ?? '';
+           if (lowerCaseQuery.startsWith('100333') && lowerCaseQuery.length > 6) {
+            final queryWithoutPrefix = lowerCaseQuery.substring(6);
+            return customerName.contains(queryWithoutPrefix) ||
+                paymentCode.contains(queryWithoutPrefix) ||
+                ConsumerCode.contains(queryWithoutPrefix);
+          } else {
+            return customerName.contains(lowerCaseQuery) ||
+                paymentCode.contains(lowerCaseQuery) ||
+                ConsumerCode.contains(lowerCaseQuery);
+          }
+        }).toList();
+      } else {
+        filteredUnpaidBill = [];
+      }
+    });
+  }
+
+
   Widget ListData(i, screenWidth, screenHeight) {
-    if (unpaidBill.isEmpty || i >= unpaidBill.length) {
+    if (UnpaidBill.isEmpty || i >= UnpaidBill.length) {
       return SizedBox(
         width: screenWidth,
         child: const Text("No Record Found!"),
       );
     }
-    String amount = unpaidBill[i]['amount']?.toString() ?? "";
-    String customerName = unpaidBill[i]['customer_name']?.toString() ?? "";
-    String PayementCode = unpaidBill[i]['payment_id']?.toString() ?? "";
-    String isBenificaryString = unpaidBill[i]['is_user_beneficiary']?.toString() ?? "";
-    String ConsumerCode = unpaidBill[i]['full_consumer_code']?.toString() ?? "";
-    bool isBenificary = isBenificaryString.toLowerCase() == 'true';
 
-    Future<void> Remove() async {
-      await AuthData.RemoveBenificary(AuthData.regMobileNumber,AuthData.Consumer);
-    }
+    String amount = UnpaidBill[i]['amount']?.toString() ?? "";
+    String customerName = UnpaidBill[i]['customer_name']?.toString() ?? "";
+    String business = UnpaidBill[i]['business_name']?.toString() ?? "";
+    String isBenificaryString = UnpaidBill[i]['is_user_beneficiary']?.toString() ?? "";
+    String paymentCode = UnpaidBill[i]['payment_code']?.toString() ?? "";
+    String ConsumerCode = UnpaidBill[i]['full_consumer_code']?.toString() ?? "";
+    String dueDate = UnpaidBill[i]['duedate']?.toString() ?? "";
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-      child: Container(
-        height: 100.0,
-        margin: const EdgeInsets.symmetric(vertical: 10.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10.0),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x08000000),
-              offset: Offset(2.0, 0.0),
-              blurRadius: 10.5,
-              spreadRadius: 4.5,
+
+    if (dueDate.isEmpty) {
+      return Container(
+        width: screenWidth,
+        height: 200,
+        decoration: const BoxDecoration(
+        ),
+        margin: const EdgeInsets.only(top: 20),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+
+          children: [
+            const Icon(Icons.cancel,color: Color(0xffEE6724),size: 30),
+            Container(
+              margin: const EdgeInsets.only(left: 10),
+              child: const Text(
+                "NO INVOICE FOUND.",
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  color:  Color(0xff000000),
+                  fontSize: 14,
+                  height: 1.7,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
             ),
           ],
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Row(
-            children: [
-              Expanded(
-                flex: 1,
-                child: Container(
-                  color: Colors.transparent,
-                  child: Stack(
-                    children: [
-                      Image.asset(
-                        'assets/images/red.png',
-                        width: screenWidth / 8,
-                        height: 80.0,
-                      ),
-                      const Positioned(
-                        top: 30,
-                        left: 0,
-                        right: 0,
-                        child: Center(
-                          child: Text(
-                            "SN",
-                            style: ThemeTextStyle.robotored,
+      );
+    }
+
+    bool isBenificary = isBenificaryString.toLowerCase() == 'true';
+    double fontSize = screenWidth <= 360 ? 9 : 11;
+
+    Future<void> pay() async {
+      if (ConsumerCode != "") {
+        Navigator.pushReplacementNamed(
+          context,
+          '/pay',
+          arguments: ConsumerCode,
+        );
+      } else {
+        Navigator.pushReplacementNamed(
+          context,
+          '/pay',
+          arguments: paymentCode,
+        );
+      }
+    }
+
+    Future<void> Remove() async {
+      await AuthData.RemoveBenificary(AuthData.regMobileNumber, AuthData.Consumer);
+    }
+
+    return GestureDetector(
+      onTap: () {
+        pay();
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+        child: Container(
+          height: 154.0,
+          margin: const EdgeInsets.symmetric(vertical: 10.0),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10.0),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x08000000),
+                  offset: Offset(2.0, 0.0),
+                  blurRadius: 10.5,
+                  spreadRadius: 4.5,
+                ),
+              ]
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.transparent,
+                    child: Stack(
+                      children: [
+                        Image.asset(
+                          'assets/images/red.png',
+                          width: screenWidth / 8,
+                          height: 80.0,
+                        ),
+                        Positioned(
+                          top: 30,
+                          left: 0,
+                          right: 0,
+                          child: Center(
+                            child: Text(
+                              getInitials(customerName),
+                              style: ThemeTextStyle.roboto,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 4,
-                child: SizedBox(
-                  width: screenWidth,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 0),
-                          child: Text(
-                            customerName,
-                            style: ThemeTextStyle.sF.copyWith(fontWeight: FontWeight.w500, color: Colors.black, fontSize: 13),
+                Expanded(
+                  flex: 4,
+                  child: SizedBox(
+                    width: screenWidth,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(bottom: 5),
+                            child: Text(
+                              customerName,
+                              style: ThemeTextStyle.sF.copyWith(fontWeight: FontWeight.w500, color: Colors.black, fontSize: 13),
+                            ),
                           ),
-                        ),
-                        Container(
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  PayementCode,
-                                  style: ThemeTextStyle.sF.copyWith(fontWeight: FontWeight.w400, color: Colors.grey, fontSize: 11),
-                                ),
+                          if (ConsumerCode.isNotEmpty)
+                            Text(
+                              '100333$ConsumerCode',
+                              style: ThemeTextStyle.sF.copyWith(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.grey,
+                                fontSize: 11,
                               ),
-                              if (isBenificary)
-                                TextButton(
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: Text("Warning"),
-                                          content: Text("Are you sure you want to remove this beneficiary?"),
-                                          actions: [
-                                            ElevatedButton(
-                                              onPressed: () {
-                                                AuthData.Consumer = ConsumerCode;
-                                                Remove();
-                                                Navigator.of(context).pop();
-                                                Navigator.of(context).pushReplacement(
-                                                  MaterialPageRoute(
-                                                    builder: (BuildContext context) => Unpaid(),
-                                                  ),
-                                                );
-                                              },
-                                              child: Text("Yes"),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: Text("No"),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  },
+                              overflow: TextOverflow.ellipsis,
+                            ),
 
-                                  child: Text(
-                                    'Remove',//+ ConsumerCode,
-                                    style: ThemeTextStyle.generalSubHeading3.copyWith(fontSize: 10),
+                          if (ConsumerCode.isEmpty)
+                            Text(
+                              '100333$paymentCode',
+                              style: ThemeTextStyle.sF.copyWith(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.grey,
+                                fontSize: 11,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+
+
+                          Text(
+                            business,
+                            style: ThemeTextStyle.sF.copyWith(fontWeight: FontWeight.w400, color: Colors.grey, fontSize: 11),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            'Due Date: ${DateFormat('dd/MM/yyyy').format(DateTime.parse(dueDate))}',
+                            style: ThemeTextStyle.sF.copyWith(fontWeight: FontWeight.w400, color: Colors.grey, fontSize: 11),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          if (isBenificary)
+                            Column(
+                              children: [
+                                Material(
+                                  elevation: 0,
+                                  child: TextButton(
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text("Warning",style: TextStyle(fontWeight: FontWeight.w900),),
+                                            content: const Text("Are you sure you want to remove this beneficiary?"),
+                                            actions: [
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  AuthData.Consumer = ConsumerCode;
+                                                  Remove();
+                                                  Navigator.of(context).pop();
+                                                  Navigator.of(context).pushReplacement(
+                                                    MaterialPageRoute(
+                                                      builder: (BuildContext context) => const Unpaid(),
+                                                    ),
+                                                  );
+                                                },
+                                                child:  const Text("Yes",style:TextStyle(color:Colors.orange)),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: const Text("No",style:TextStyle(color:Colors.orange)),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Text(
+                                      'Remove',
+                                      style: ThemeTextStyle.generalSubHeading3.copyWith(fontSize: 10),
+                                    ),
                                   ),
                                 ),
-                            ],
-                          ),
-                        )
-                      ],
+                              ],
+                            ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                flex: 2,
-                child: SizedBox(
-                  width: screenWidth,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 3.0),
-                          child: Text(
-                            "\RS$amount",
-                            style: ThemeTextStyle.sF.copyWith(fontWeight: FontWeight.w600, color: Colors.red, fontSize: 12),
-                          ),
-                        ),
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 15),
-                            minimumSize: Size.zero,
-                            backgroundColor: GeneralThemeStyle.niull, // Set the background color here
-                            textStyle: const TextStyle(
-                              fontSize: 11,
-                              color: Colors.black,
+                Expanded(
+                  flex: 2,
+                  child: SizedBox(
+                    width: screenWidth,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 7),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+
+                          Padding(
+                            padding: const EdgeInsets.only(top: 3.0),
+                            child: LayoutBuilder(
+                              builder: (BuildContext context, BoxConstraints constraints) {
+
+                                bool textExceedsWidth = constraints.maxWidth < MediaQuery.of(context).size.width;
+
+
+                                double fontSize = textExceedsWidth ? 12.0 : 12.0;
+
+                                return Text(
+                                  "RS $amount",
+                                  style: ThemeTextStyle.sF.copyWith(fontWeight: FontWeight.w600, color: Colors.redAccent, fontSize: fontSize),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                );
+                              },
                             ),
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(40),
-                                topLeft: Radius.circular(40),
-                                bottomRight: Radius.circular(40),
-                                bottomLeft: Radius.circular(40),
+                          ),
+
+                          TextButton(
+                            style: TextButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 15),
+                              minimumSize: Size.zero,
+                              backgroundColor: GeneralThemeStyle.niull,
+                              textStyle: const TextStyle(
+                                fontSize: 11,
+                                color: Colors.black,
+                              ),
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(40),
+                                  topLeft: Radius.circular(40),
+                                  bottomRight: Radius.circular(40),
+                                  bottomLeft: Radius.circular(40),
+                                ),
                               ),
                             ),
-                          ),
-                          onPressed: () {
-                            Navigator.pushReplacementNamed(context, '/pay');
-                          },
-                          child: Text(
-                            'Pay Now',
-                            style: ThemeTextStyle.sF.copyWith(fontSize: 11, color: Colors.black45), // Set the text color
-                          ),
-                        ),
 
-                      ],
+                            onPressed: () {
+                              pay();
+                            },
+                            child: Text(
+                              'Pay Now',
+                              style: ThemeTextStyle.sF.copyWith(fontSize:fontSize, color: Colors.black45),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
-
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     print("didUpdateWidget: notification = $notification");
 
-
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Stack(
-          children: [
-            Padding(
-              padding: EdgeInsets.all(screenWidth * 0.05),
-              child: SizedBox(
-                width: screenWidth,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(0, screenHeight * 0.01, 0, 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Stack(
-                                children: [
-                                  Image.asset(
-                                    'assets/images/Ellipse3.png',
-                                    width: screenWidth / 6,
-                                    height: screenHeight * 0.1,
-                                  ),
-                                  Positioned(
-                                    top: screenHeight * 0.04,
-                                    left: 0,
-                                    right: 0,
-                                    child: const Center(
-                                      child: Text(
-                                        'NN',
-                                        style: ThemeTextStyle.roboto,
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushReplacementNamed(context, '/dashboard');
+        return true;
+      },
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Stack(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(screenWidth * 0.05),
+                child: SizedBox(
+                  width: screenWidth,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 10),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(Icons.arrow_back),
+                                          onPressed:() {
+                                            Navigator.push(
+                                              context,
+                                                Navigator.pushReplacementNamed(context, '/dashboard') as Route<Object?>
+                                            );
+                                          },
+                                        ),
+                                        const Text(
+                                          'Unpaid Bills',
+                                          style: ThemeTextStyle.detailPara,
+                                        ),
+                                      ],
+                                    )
+                                ),
+                                Row(
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.only(right: 10),
+                                      child: InkWell(
+                                        onTap: () {
+                                          Navigator.pushReplacementNamed(context, '/paid');
+                                        },
+                                        child: Material(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(screenWidth * 0.075),
+                                          ),
+                                          color: Colors.transparent,
+                                          child: SizedBox(
+                                            height: 90,
+                                            width: screenWidth / 5,
+                                            child: Image.asset(
+                                              'assets/images/paidbill.png',
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(bottom: screenHeight * 0.004),
-                                    child: Text(
-                                      'Good Morning',
-                                      style: ThemeTextStyle.good1.copyWith(fontSize: 12),
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.pushReplacementNamed(context, '/pay');
+                                      },
+                                      child: Material(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(screenWidth * 0.075),
+                                        ),
+                                        color: Colors.transparent,
+                                        child: SizedBox(
+                                          height: 90,
+                                          width: screenWidth / 5,
+                                          child: Image.asset(
+                                            'assets/images/Benificary.png',
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
-
-
-                                  const Text('Assalam Walaikum',
-                                    style: ThemeTextStyle.good2,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  _showDialog3(context);
-                                },
-                                icon: Image.asset(
-                                  'assets/images/help.png',
-                                  width: screenWidth * 0.1,
-                                  height: screenWidth * 0.1,
+                                  ],
                                 ),
-                              ),
-
-                              IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    notification = !notification;
-                                    _showDialog2(context);
-                                  });
-                                },
-
-                                icon: Builder(
-                                  builder: (context) {
-                                    if (notification) {
-                                      return Image.asset(
-                                        "assets/images/Notification.png",
-                                        width: screenWidth/8,
-                                        height: 40.0,
-                                      );
-                                    } else {
-                                      return Image.asset(
-                                        "assets/images/NoNotification.png",
-                                        width: screenWidth/10,
-                                        height: 40.0,
-                                      );
-                                    }
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    ProfileSection(),
-                    // Feature Section
-                    Padding(
-                      padding: EdgeInsets.only(top: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Unpaid Bills',
-                                  style: ThemeTextStyle.detailPara,
-                                ),
-                                // TextButton(
-                                //   onPressed: () {
-                                //     // fetchUnpaidBill();
-                                //   },
-                                //   child: Text(
-                                //     'View all',
-                                //     style: ThemeTextStyle.sF.copyWith(fontWeight: FontWeight.w400,color: Colors.black,fontSize: 12),
-                                //   ),
-                                // ),
                               ],
                             ),
-                          ),
-                          Row(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(right: 10),
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.pushReplacementNamed(context, '/paid');
-                                  },
-                                  child: Material(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(screenWidth * 0.075), // Adjust the border radius for a square shape
-                                    ),
-                                    color: Colors.transparent, // Set the color to transparent to avoid the default splash color
-                                    child: SizedBox(
-                                      height: 90,
-                                      width: screenWidth / 5,
-                                      child: Image.asset(
-                                        'assets/images/paidbill.png',
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.pushReplacementNamed(context, '/pay');
+                            const SizedBox(height: 15),
+                            Container(
+                              alignment: Alignment.center,
+                              child: TextField(
+                                controller: Search,
+
+                                onChanged: (value) {
+                                  filterUnpaidBill(value);
                                 },
-                                child: Material(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(screenWidth * 0.075), // Adjust the border radius for a square shape
+                                decoration: InputDecoration(
+                                  hintText: 'Search',
+                                  prefixIcon: const Icon(Icons.search),
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(color: GeneralThemeStyle.button, width: 1.0),
                                   ),
-                                  color: Colors.transparent, // Set the color to transparent to avoid the default splash color
-                                  child: SizedBox(
-                                    height: 90,
-                                    width: screenWidth / 5,
-                                    child: Image.asset(
-                                      'assets/images/Benificary.png',
-                                      fit: BoxFit.cover,
-                                    ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderSide: const BorderSide(color: GeneralThemeStyle.output, width: 1.0),
+                                  ),
+                                  labelStyle: const TextStyle(
+                                    color: Colors.grey,
                                   ),
                                 ),
                               ),
-                            ],
+                            ),
+                            const SizedBox(height: 15),
+                            if (Search.text.isNotEmpty)
+
+                              if (filteredUnpaidBill.isNotEmpty)
+                                Column(
+                                  children: filteredUnpaidBill.map((bill) {
+                                    return ListData(
+                                      UnpaidBill.indexOf(bill),
+                                      screenWidth,
+                                      screenHeight,
+                                    );
+                                  }).toList()
+                                  // else if (paidBil
+                                )
+                              else
+                                SizedBox(
+                                  width: screenWidth,
+                                  child: const Text("No Record Found!"),
+                                ),
+
+
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: 5,
+                      ),
+                      if (spinner == false)
+                        if (Search.text.isEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 0.0),
+                            child: SizedBox(
+                              height: screenHeight * 0.60,
+                              width: screenWidth,
+
+                              child: ListView.builder(
+                                padding: const EdgeInsets.all(0.0),
+                                scrollDirection: Axis.vertical,
+                                itemCount: UnpaidBill.length,
+                                itemBuilder: (context, index) {
+                                  return Column(
+                                    children: [
+                                      ListData(index, screenWidth, screenHeight)
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
                           ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 5,
-                    ),
-
-                    if(spinner==false)
-                      Padding(
-                      padding: const EdgeInsets.only(bottom: 0.0),
-                      child: SizedBox(
-                        height:screenHeight*0.60,
-                        width: screenWidth,
-                        child: ListView.builder(
-                          padding: const EdgeInsets.all(0.0),
-                          scrollDirection: Axis.vertical,
-                          itemCount: unpaidBill.length,
-                          itemBuilder: (context, index) {
-                            return Column(
-                              children: [
-                                ListData(index,screenWidth,screenHeight)
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-
-                  ],
-                ),
-              ),
-            ),
-
-            if(spinner==true)
-              Positioned(
-                child: Container(
-                  width: screenWidth,
-                  height: screenHeight,
-                  color: Colors.black87,
-                  child: SpinKitWave(
-                    itemBuilder: (_, int index) {
-                      return DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: index.isEven ? Colors.deepOrangeAccent : Colors.orange,
-                        ),
-                      );
-                    },
-                    size: 50.0,
+                    ],
                   ),
                 ),
               ),
-          ],
+              if (spinner == true)
+                Positioned(
+                  child: Container(
+                    width: screenWidth,
+                    height: screenHeight,
+                    color: Colors.black87,
+                    child: SpinKitWave(
+                      itemBuilder: (_, int index) {
+                        return DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: index.isEven ? Colors.deepOrangeAccent : Colors.orange,
+                          ),
+                        );
+                      },
+                      size: 50.0,
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
-
+        bottomNavigationBar: const CustomBottomNavigationBar(),
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(),
     );
-
   }
-
-
 }
-
-// class ContainerList extends StatelessWidget {
-//   const ContainerList({super.key, Key? key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     double screenWidth = MediaQuery.of(context).size.width;
-//     double screenHeight = MediaQuery.of(context).size.height;
-//
-//      bool isLargeHeight(BuildContext context) => //ye wala isDesktop tm apne bari screens k liye use kroge, like iphone 14 pro ki screen for example 300+ hai to usko 300< lagayenge
-//         MediaQuery.of(context).size.height >= 867;
-//      bool isLowHeight(BuildContext context) =>
-//          MediaQuery.of(context).size.height < 867;
-//
-//     List<String> headings = [
-//       'Naufil Nadeem',
-//       'Farhan Siddiqui',
-//       'Adil Hussain',
-//       'Asif Hassan',
-//       'Bilal Ahmed',
-//     ];
-//     List<String> text = [
-//       'Consumer ID: 0011',
-//       'Consumer ID: 0012',
-//       'Consumer ID: 0013',
-//       'Consumer ID: 0014',
-//       'Consumer ID: 0015',
-//     ];
-//     List<String> imagetext = ['NN', 'FS', 'AH', 'AS', 'MM'];
-//     List<String> Number = ['Rs 2000', 'Rs 2000', 'Rs 2000', 'Rs 2000', 'Rs 2000'];
-//     return Padding(
-//       padding: const EdgeInsets.only(bottom: 0.0),
-//       child: SizedBox(
-//         height: isLargeHeight(context) ? screenHeight * 0.44 : (isLowHeight(context) ? screenHeight * 0.38 : null),
-//         width: screenWidth,
-//         child: Column(
-//             children: [
-//         Expanded(
-//         child: ListView.builder(
-//         padding: const EdgeInsets.all(0.0),
-//         scrollDirection: Axis.vertical,
-//         itemCount: 5,
-//         itemBuilder: (context, index) {
-//           return Column(
-//             children: [
-//               Container(
-//                 height: 80.0,
-//                 margin: const EdgeInsets.symmetric(vertical: 10.0),
-//                 decoration: BoxDecoration(
-//                   color: Colors.white,
-//                   borderRadius: BorderRadius.circular(10.0),
-//                   boxShadow: const [
-//                     BoxShadow(
-//                       color: Color(0x10000000),
-//                       offset: Offset(1.0, 0.0),
-//                       blurRadius: 3.5,
-//                       spreadRadius: 1.5,
-//                     ),
-//                   ],
-//                 ),
-//                   child: Row(
-//                     children: [
-//                       Stack(
-//                         children: [
-//                           Image.asset(
-//                             'assets/images/red.png',
-//                             width: screenWidth / 8,
-//                             height: 80.0,
-//                           ),
-//                           Positioned(
-//                             top: 30,
-//                             left: 15,
-//                             child: Text(
-//                               imagetext[index],
-//                               style: ThemeTextStyle.robotored,
-//                             ),
-//                           ),
-//                         ],
-//                       ),
-//                       Expanded(
-//                         child: Padding(
-//                           padding: const EdgeInsets.only(left: 20.0),
-//                           child: Column(
-//                             crossAxisAlignment: CrossAxisAlignment.start,
-//                             children: [
-//                               Padding(
-//                                 padding: const EdgeInsets.only(top: 20.0),
-//                                 child: Text(
-//                                   headings[index],
-//                                   style: ThemeTextStyle.sF.copyWith(
-//                                     fontWeight: FontWeight.w500,
-//                                     color: Colors.black,
-//                                     fontSize: 14,
-//                                   ),
-//                                 ),
-//                               ),
-//                               Padding(
-//                                 padding: const EdgeInsets.only(top: 10.0),
-//                                 child: Text(
-//                                   text[index],
-//                                   style: ThemeTextStyle.sF.copyWith(
-//                                     fontWeight: FontWeight.w400,
-//                                     color: Colors.grey,
-//                                     fontSize: 10,
-//                                   ),
-//                                 ),
-//                               ),
-//                             ],
-//                           ),
-//                         ),
-//                       ),
-//                       Row(
-//                         mainAxisAlignment: MainAxisAlignment.start,
-//                         children: [
-//                           Padding(
-//                             padding: const EdgeInsets.all(3.0),
-//                             child: Column(
-//                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                               children: [
-//                                 Text(
-//                                   Number[index],
-//                                   style: ThemeTextStyle.sF.copyWith(
-//                                     fontWeight: FontWeight.w900,
-//                                     color: Colors.red,
-//                                     fontSize: 16,
-//                                   ),
-//                                 ),
-//                                 ElevatedButton(
-//                                   onPressed: () {
-//                                     Navigator.pushReplacementNamed(context, '/pay');
-//                                   },
-//                                   style: ElevatedButton.styleFrom(
-//                                     backgroundColor: GeneralThemeStyle.niull,
-//                                     minimumSize: Size(50.0, 20.0), // Adjust width and height as needed
-//                                   ),
-//                                   child: Text(
-//                                     'Pay Now',
-//                                     style: ThemeTextStyle.sF.copyWith(
-//                                       fontSize: 8,
-//                                       color: Colors.black,
-//                                     ),
-//                                   ),
-//                                 ),
-//                               ],
-//                             ),
-//                           ),
-//                         ],
-//                       ),
-//
-//
-//                     ],
-//
-//                   ),
-//
-//                 ),
-//
-//               ],
-//             );
-//           },
-//         ),
-//       ),
-//     ],
-//       ),
-//       )
-//     );
-//   }
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// class ContainerList extends StatelessWidget {
-//   const ContainerList({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     double screenWidth = MediaQuery.of(context).size.width;
-//     double screenHeight = MediaQuery.of(context).size.height;
-//
-//
-//     List<String> headings = [
-//       'Naufil Nadeem',
-//       'Farhan Siddiqui',
-//       'Adil Hussain',
-//       'Asif Hassan',
-//       'Bilal Ahmed',
-//     ];
-//     List<String> text = [
-//       'Consumer ID: 0011',
-//       'Consumer ID: 0012',
-//       'Consumer ID: 0013',
-//       'Consumer ID: 0014',
-//       'Consumer ID: 0015',
-//     ];
-//     List<String> imagetext = [
-//       'NN',
-//       'FS',
-//       'AH',
-//       'AS',
-//       'MM',
-//     ];
-//     List<String> Number = [
-//       'Rs 2000',
-//       'Rs 2000',
-//       'Rs 2000',
-//       'Rs 2000',
-//       'Rs 2000',
-//     ];
-//
-//     return Padding(
-//       padding: const EdgeInsets.only(bottom: 0.0),
-//       child: Container(
-//
-//         height:screenHeight*0.40,
-//         width: screenWidth,
-//         child: ListView.builder(
-//           padding: EdgeInsets.all(0.0),
-//           scrollDirection: Axis.vertical,
-//           itemCount: 5,
-//           itemBuilder: (context, index) {
-//             return Container(
-//               height: 80.0, // Adjust the height as needed
-//               margin: const EdgeInsets.symmetric(vertical: 10.0),
-//               decoration: BoxDecoration(
-//                 color: Colors.white,
-//                 borderRadius: BorderRadius.circular(10.0), // Adjust the radius as needed
-//                 boxShadow: const [
-//                   BoxShadow(
-//                     color: Color(0x10000000),
-//                     offset: Offset(2.0, 0.0),
-//                     blurRadius: 10.5,
-//                     spreadRadius:4.5,
-//                   ),
-//                 ],
-//               ),
-//               child: Stack(
-//                 children: [
-//                   Image.asset(
-//                     'assets/images/red.png',
-//                     width: screenWidth / 8,
-//                     height: 80.0,
-//                   ),
-//                   Positioned(
-//                     top: 30,
-//                     left: 0,
-//                     right: 320,
-//                     child: Center(
-//                       child: Text(
-//                         imagetext[index], // You can customize this text if needed
-//                         style: ThemeTextStyle.robotored,
-//                       ),
-//                     ),
-//                   ),
-//                   Container(
-//                     width: screenWidth / 1.5,
-//                     child: Stack(
-//                       children: [
-//                         Positioned(
-//                           top: 10,
-//                           bottom: 0,
-//                           left: 65,
-//                           child: Container(
-//                             margin: EdgeInsets.only(bottom: 0),
-//                             child: Padding(
-//                               padding: const EdgeInsets.symmetric(vertical: 12.0),
-//                               child: Text(
-//                                 headings[index],
-//                                 style: ThemeTextStyle.sF.copyWith(fontWeight: FontWeight.w500, color: Colors.black, fontSize: 14),
-//                               ),
-//                             ),
-//                           ),
-//                         ),
-//                         Positioned(
-//                           bottom: 20,
-//                           left: 65,
-//                           child: Container(
-//                             child: Text(
-//                               text[index],
-//                               style: ThemeTextStyle.sF.copyWith(fontWeight: FontWeight.w400, color: Colors.grey, fontSize: 10),
-//                             ),
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-//
-//
-//                   Positioned(
-//                     top: 0,
-//                     left: 250,
-//                     right: 00,
-//                     bottom: 40,
-//                     child: Center(
-//                       child: Text(
-//                         Number[index],
-//                         style: ThemeTextStyle.sF.copyWith(fontWeight: FontWeight.w900, color: Colors.red, fontSize: 16),
-//                       ),
-//                     ),
-//                   ),
-//                   Positioned(
-//                     bottom: 20,
-//                     right: 10,
-//                     width: screenWidth / 5,
-//                     height: 20.0,
-//                     child: ElevatedButton(
-//                       onPressed: () {
-//                         Navigator.pushReplacementNamed(context, '/pay');
-//                       },
-//                       style: ElevatedButton.styleFrom(
-//                         backgroundColor: GeneralThemeStyle.niull,
-//                       ),
-//                       child: Text(
-//                         'Pay Now',
-//                         style: ThemeTextStyle.sF.copyWith(fontSize: 8, color: Colors.black),
-//                       ),
-//                     ),
-//                   ),
-//
-//
-//                 ],
-//               ),
-//             );
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }

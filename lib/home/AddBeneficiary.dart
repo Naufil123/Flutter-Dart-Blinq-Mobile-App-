@@ -3,6 +3,7 @@ import '../appData/ApiData.dart';
 import '../appData/dailogbox.dart';
 import 'package:flutter/material.dart';
 import '../appData/ThemeStyle.dart';
+import 'NotificationScreen.dart';
 
 class AddBeneficiary extends StatefulWidget {
   const AddBeneficiary({super.key});
@@ -32,7 +33,7 @@ class _AddBeneficiaryState extends State<AddBeneficiary> {
       child: SizedBox(
         width: width,
         height: 50,
-        //margin: const EdgeInsets.fromLTRB(0, 210, 0, 0),
+
         child: TextFormField(
           controller: null,
           keyboardType: TextInputType.emailAddress,
@@ -60,16 +61,7 @@ class _AddBeneficiaryState extends State<AddBeneficiary> {
   void initState(){
     super.initState();
   }
-  void _showDialog2(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
 
-    Notification3.showAlertDialog(
-      context,
-      'Successful!',
-      'Your ID has been verified \nsuccessfully!',
-      screenWidth,
-    );
-  }
   void _showDialog3(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
@@ -165,14 +157,12 @@ class _AddBeneficiaryState extends State<AddBeneficiary> {
 
                           IconButton(
                             onPressed: () {
-                              // Future.delayed(Duration(milliseconds: 1), () {
+
                                 setState(() {
                                   notification = !notification;
-                                  _showDialog2(context);
-                                  // print(screenHeight);
 
                                 });
-                              // });
+
                             },
 
                             icon: Builder(

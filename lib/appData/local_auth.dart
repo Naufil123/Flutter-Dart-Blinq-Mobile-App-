@@ -1,7 +1,10 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:local_auth/local_auth.dart';
 
 import 'AuthData.dart';
+import 'ThemeStyle.dart';
+
 class LocalAuth {
   static final _auth = LocalAuthentication();
 
@@ -12,26 +15,58 @@ class LocalAuth {
     try {
       if (!await _canAuthenticate()) return false;
 
-      // Biometric authentication
       bool biometricSuccess = await _auth.authenticate(
         localizedReason: "Use fingerprint",
       );
 
-      if (biometricSuccess) {
-        // If biometric authentication is successful, call userBiometricAuthenticate
-        await AuthData.userBiometricAuthenticate(
-          username: '03222486053',
-          pin: '1111', // Use a predefined or temporary pin for biometric authentication
+
+      if (biometricSuccess ) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return Center(
+              child: Container(
+                padding: const EdgeInsets.all(20.0),
+                child: const Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SpinKitWave(
+                      color: Colors.orange,
+                      size: 50.0,
+                    ),
+                    SizedBox(height: 0),
+                    Text(
+                      'Authenticating...',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+
+        );
+
+
+        String status = await AuthData.userBiometricAuthenticate(
+          username: AuthData.biousername,
+          pin: AuthData.biopin,
           context: context,
           useBiometric: true,
         );
 
+        await AuthData.saveLoginStatus(true);
+
+        if (status == 'failure') {
+          Navigator.pop(context);
+        }
+
+        return status == 'success';
       } else {
-
         debugPrint('Biometric authentication failed or canceled');
+        return false;
       }
-
-      return biometricSuccess;
     } catch (e) {
       debugPrint('Error during biometric authentication: $e');
       return false;

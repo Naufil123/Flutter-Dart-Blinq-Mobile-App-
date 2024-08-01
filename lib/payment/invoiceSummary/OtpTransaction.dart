@@ -2,14 +2,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:timer_count_down/timer_count_down.dart';
+import '../../Controller/Network_Conectivity.dart';
 import '../../appData/ApiData.dart';
+import '../../appData/AuthData.dart';
 import '../../appData/ThemeStyle.dart';
 import '../../appData/dailogbox.dart';
 import '../../appData/masking.dart';
 import '../../home/ProfileSection.dart';
-import 'package:flutter_file_downloader/flutter_file_downloader.dart';
+// import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutterme_credit_card/flutterme_credit_card.dart';
@@ -79,12 +83,21 @@ class _OtpTransactionState extends State<OtpTransaction> {
     ApiData.doAccountPayment["ORDER_DATE"]=widget.paramPaymentData["order_date"];
     ApiData.doAccountPayment["CUSTOMER_EMAIL"]="demo@this.com";
     ApiData.doAccountPayment["CUSTOMER_MOBILE"]="00000000000";
+    // Get.find<NetworkController>().registerPageReloadCallback('/unpaid', _reloadPage);
   }
+
+
+  @override
+  void dispose() {
+    Get.find<NetworkController>().unregisterPageReloadCallback('/unpaid');
+    super.dispose();
+  }
+
 
   @override
   void didUpdateWidget(covariant OtpTransaction oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // print("didUpdateWidget: notification = $notification");
+
   }
 
   @override
@@ -124,9 +137,9 @@ class _OtpTransactionState extends State<OtpTransaction> {
                                       top: screenHeight * 0.04,
                                       left: 0,
                                       right: 0,
-                                      child: const Center(
+                                      child:  Center(
                                         child: Text(
-                                          'NN',
+                                          getInitials(AuthData.regFullName),
                                           style: ThemeTextStyle.roboto,
                                         ),
                                       ),
@@ -171,7 +184,7 @@ class _OtpTransactionState extends State<OtpTransaction> {
                         ),
                       ),
 
-                      // Profile Section
+
                       ProfileSection(),
 
                       Column(
@@ -279,7 +292,7 @@ class _OtpTransactionState extends State<OtpTransaction> {
 
                                                       print(ApiData.validatorColor);
                                                     },
-                                                    child: Text("Resend Otp",style: TextStyle(color: Colors.red),),
+                                                    child: Text("Resend OTP",style: TextStyle(color: Colors.red),),
                                                   ),
                                                 ),
                                               ],
@@ -421,26 +434,6 @@ class _OtpTransactionState extends State<OtpTransaction> {
 }
 
 
-// decoration: const InputDecoration(
-//   labelText: 'Search Invoices',
-//   focusedBorder: OutlineInputBorder(
-//     borderSide: BorderSide(
-//     color: GeneralThemeStyle.button, width: 1.0),
-//   ),
-//   enabledBorder: OutlineInputBorder(
-//     borderRadius: BorderRadius.only(
-//     topLeft: Radius.circular(10),
-//     topRight: Radius.circular(0),
-//     bottomLeft: Radius.circular(10),
-//     bottomRight: Radius.circular(0)
-//   ),
-//   borderSide: BorderSide(
-//     color: GeneralThemeStyle.output, width: 1.0),
-//   ),
-//   labelStyle: TextStyle(
-//     color: Colors.grey,
-//   ),
-// ),
 
 
 InputDecoration inputDecoration({

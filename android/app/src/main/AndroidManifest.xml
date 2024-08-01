@@ -2,9 +2,11 @@
     package="pk.blinq.app">
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
-        android:label="blinq_sol"
+        android:label="Blinq"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

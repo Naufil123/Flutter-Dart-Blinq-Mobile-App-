@@ -4,8 +4,8 @@
     package="com.it_nomads.fluttersecurestorage" >
 
     <uses-sdk
-        android:minSdkVersion="18"
-        android:targetSdkVersion="18"
+        android:minSdkVersion="19"
+        android:targetSdkVersion="19"
         tools:overrideLibrary="androidx.security" />
 
 </manifest>

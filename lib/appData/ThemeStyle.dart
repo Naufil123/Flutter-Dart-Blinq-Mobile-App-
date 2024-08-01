@@ -151,20 +151,114 @@ class Snacksbar {
   static void showSuccessSnackBar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 3),
+        content: Text(message,style: TextStyle(color: Colors.white,fontWeight:FontWeight.w900),textAlign:TextAlign.center,),
+        duration: const Duration(seconds: 2),
         backgroundColor: Colors.green,
       ),
     );
   }
 
-  static void showErrorSnackBar(BuildContext context, String message) {
+  static void ProfileSucess(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
+        content: Text(message,style: TextStyle(color: Colors.white,fontWeight:FontWeight.w900),textAlign:TextAlign.center,),
+        duration: const Duration(seconds: 2),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+  static int requestCount = 0;
+  static DateTime lastRequestTime = DateTime.now();
+
+  static void showErrorSnackBar(BuildContext context, String message) {
+    if (DateTime
+        .now()
+        .difference(lastRequestTime)
+        .inSeconds <= 10) {
+      if (requestCount >= 2) {
+        return;
+      }
+    } else {
+      requestCount = 0;
+    }
+    requestCount++;
+    lastRequestTime = DateTime.now();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message,style:TextStyle(color: Colors.white,fontWeight:FontWeight.w900),textAlign:TextAlign.center,),
         duration: const Duration(seconds: 3),
         backgroundColor: Colors.red,
       ),
     );
   }
+
+  static void Showmsg(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: const TextStyle(color: Colors.black,fontWeight:FontWeight.w900),textAlign:TextAlign.center,),
+        duration: const Duration(seconds: 3),
+        backgroundColor: Colors.white,
+      ),
+    );
+  }
+
+
+  static void showCustomSnackbar(BuildContext context, String message) {
+    final overlay = Overlay.of(context);
+    final overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: 50.0,
+        left: 20.0,
+        right: 20.0,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+           child:Text(message,style:TextStyle(color: Colors.white,fontWeight:FontWeight.w900),textAlign:TextAlign.center,),
+          ),
+        ),
+      ),
+    );
+
+    overlay.insert(overlayEntry);
+
+    Future.delayed(const Duration(seconds: 3), () {
+      overlayEntry.remove();
+    });
+  }
+static void showCustomSucessSnackbar(BuildContext context, String message) {
+    final overlay = Overlay.of(context);
+    final overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: 50.0,
+        left: 20.0,
+        right: 20.0,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.green,
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+           child:Text(message,style:TextStyle(color: Colors.white,fontWeight:FontWeight.w900),textAlign:TextAlign.center,),
+          ),
+        ),
+      ),
+    );
+
+    overlay.insert(overlayEntry);
+
+    Future.delayed(const Duration(seconds: 3), () {
+      overlayEntry.remove();
+    });
+  }
+
+
 }

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:blinq_sol/main.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -40,12 +39,12 @@ class FirebaseApi {
         notification.title,
         notification.body,
         NotificationDetails(
-          android: AndroidNotificationDetails(
-            _androidChannel.id,
-            _androidChannel.name,
-            channelDescription: _androidChannel.description,
-            icon: '@drawable/ic_launcher',
-          )
+            android: AndroidNotificationDetails(
+              _androidChannel.id,
+              _androidChannel.name,
+              channelDescription: _androidChannel.description,
+              icon: '@drawable/ic_launcher',
+            )
         ),
         payload: jsonEncode(message.toMap()),
       );
@@ -63,28 +62,28 @@ class FirebaseApi {
     const String navigationActionId = 'id_3';
 
     await _localNotifications.initialize(
-      settings,
-      onDidReceiveBackgroundNotificationResponse: (NotificationResponse notificationResponse){
-        switch (notificationResponse.notificationResponseType) {
-          case NotificationResponseType.selectedNotification:
-            selectNotificationStream.add(notificationResponse.payload);
-            final message = notificationResponse.payload;
-            handleMessage(RemoteMessage.fromMap(jsonDecode(message!)));
-            break;
-          case NotificationResponseType.selectedNotificationAction:
-            if (notificationResponse.actionId == navigationActionId) {
+        settings,
+        onDidReceiveBackgroundNotificationResponse: (NotificationResponse notificationResponse){
+          switch (notificationResponse.notificationResponseType) {
+            case NotificationResponseType.selectedNotification:
               selectNotificationStream.add(notificationResponse.payload);
               final message = notificationResponse.payload;
               handleMessage(RemoteMessage.fromMap(jsonDecode(message!)));
-            }
-            break;
+              break;
+            case NotificationResponseType.selectedNotificationAction:
+              if (notificationResponse.actionId == navigationActionId) {
+                selectNotificationStream.add(notificationResponse.payload);
+                final message = notificationResponse.payload;
+                handleMessage(RemoteMessage.fromMap(jsonDecode(message!)));
+              }
+              break;
+          }
         }
-      }
     );
 
     final platform = _localNotifications.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
     await platform?.createNotificationChannel(_androidChannel);
-}
+  }
 
   Future<void> handleBackgroundMessage(RemoteMessage message) async {
     if (kDebugMode) {
@@ -96,7 +95,7 @@ class FirebaseApi {
     initPushNotifications();
   }
 
-  Future<void> handleMessage(RemoteMessage? message)async {
+  Future<void> handleMessage(RemoteMessage? message) async {
     if(message == null) return;
 
     if (kDebugMode) {
@@ -105,7 +104,15 @@ class FirebaseApi {
       print('Body: ${message.notification?.body}');
       print('Payload: ${message.data}');
     }
-    navigatorKey.currentState?.pushReplacementNamed('/notification-screen', arguments: message);
+
+    if (message.data!= null) {
+
+      if (message.data["route"] == "/pay") {
+        navigatorKey.currentState?.pushNamed(message.data["route"] as String, arguments:message.data["payment_id"]);
+      } else {
+
+      }
+    }
   }
 
   Future<void> initNotifications() async {

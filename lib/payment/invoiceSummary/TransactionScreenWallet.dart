@@ -1,20 +1,20 @@
 // import 'dart:html';
 
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:timer_count_down/timer_count_down.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+
+import '../../Controller/Network_Conectivity.dart';
 import '../../appData/ApiData.dart';
+import '../../appData/AuthData.dart';
 import '../../appData/ThemeStyle.dart';
-import '../../appData/dailogbox.dart';
+
 import '../../appData/masking.dart';
 import '../../home/ProfileSection.dart';
-import 'package:flutter_file_downloader/flutter_file_downloader.dart';
-import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:flutterme_credit_card/flutterme_credit_card.dart';
-import 'dart:async';
-import 'dart:io';
+
 
 class TransactionScreenWallet extends StatefulWidget {
   Map<String, dynamic> paramSearchedInvoices;
@@ -36,6 +36,7 @@ class _TransactionScreenWalletState extends State<TransactionScreenWallet> {
   late TextEditingController validThru = TextEditingController();
   late TextEditingController cvv = TextEditingController();
   late TextEditingController holder = TextEditingController();
+
 
   get billController => null;
 
@@ -61,21 +62,19 @@ class _TransactionScreenWalletState extends State<TransactionScreenWallet> {
 
 
   void collectInitialData(){
-    // Customer Email
+
     if(widget.paramSearchedInvoices["invoice_data"]["customer_email1"]=="" || widget.paramSearchedInvoices["invoice_data"]["customer_email1"]==null){
       ApiData.doWalletJazzCashData["CUSTOMER_EMAIL"] = "demo@email.com";
     }else {
       ApiData.doWalletJazzCashData["CUSTOMER_EMAIL"] = widget.paramSearchedInvoices["invoice_data"]["customer_email1"];
     }
-
-    // Customer Mobile
     if(widget.paramSearchedInvoices["invoice_data"]["customer_mobile1"]=="" || widget.paramSearchedInvoices["invoice_data"]["customer_mobile1"]==null){
       ApiData.doWalletJazzCashData["CUSTOMER_MOBILE"] = "00000000000";
     }else {
       ApiData.doWalletJazzCashData["CUSTOMER_MOBILE"] = widget.paramSearchedInvoices["invoice_data"]["customer_mobile1"];
     }
 
-    // Customer Name
+
     if(widget.paramSearchedInvoices["invoice_data"]["customer_name"]=="" || widget.paramSearchedInvoices["invoice_data"]["customer_name"]==null){
       ApiData.doWalletJazzCashData["CUSTOMER_NAME"] = "Dummy Name";
     }else {
@@ -91,8 +90,20 @@ class _TransactionScreenWalletState extends State<TransactionScreenWallet> {
     ApiData.doWalletJazzCashData["RETURN_URL"] = "https://staging-ipg.blinq.pk/Home/Payinvoice";
 
   }
+  Future<void> fetchChargesForWallet() async {
+    setState(() {
+      if (dropdownValueForWalletName.trim().toLowerCase() == 'select wallet name') {
+       widget.paramSearchedInvoices["transaction_charges"]["wallet_charges"] = 0.00;
+      } else if (dropdownValueForWalletName.trim().toLowerCase() == 'easypaisa') {
+        widget.paramSearchedInvoices["transaction_charges"]["wallet_charges"] = widget.paramSearchedInvoices["transaction_charges"]["ep_wallet_charges"].toString();
+      } else if (dropdownValueForWalletName.trim().toLowerCase() == 'jazzcash') {
+        widget.paramSearchedInvoices["transaction_charges"]["wallet_charges"] = widget.paramSearchedInvoices["transaction_charges"]["jc_wallet_charges"].toString();
+      }
+    });
+  }
 
-  //
+
+
   @override
   void initState(){
     super.initState();
@@ -112,18 +123,29 @@ class _TransactionScreenWalletState extends State<TransactionScreenWallet> {
     }
     generateWalletList();
     collectInitialData();
-
-    // listen to state changes within the form field controllers
     number.addListener(() => setState(() {}));
     validThru.addListener(() => setState(() {}));
     cvv.addListener(() => setState(() {}));
     holder.addListener(() => setState(() {}));
+    Get.find<NetworkController>().registerPageReloadCallback('/Wallet', _reloadPage);
+  }
+
+
+  @override
+  void dispose() {
+    Get.find<NetworkController>().unregisterPageReloadCallback('/Wallet');
+    super.dispose();
+  }
+
+  void _reloadPage() {
+
+    collectInitialData();
   }
 
   @override
   void didUpdateWidget(covariant TransactionScreenWallet oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // print("didUpdateWidget: notification = $notification");
+
   }
 
   @override
@@ -150,71 +172,14 @@ class _TransactionScreenWalletState extends State<TransactionScreenWallet> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
-                              children: [
-                                Stack(
-                                  children: [
-                                    Image.asset(
-                                      'assets/images/Ellipse3.png',
-                                      width: screenWidth / 6,
-                                      height: screenHeight * 0.1,
-                                    ),
-                                    Positioned(
-                                      top: screenHeight * 0.04,
-                                      left: 0,
-                                      right: 0,
-                                      child: const Center(
-                                        child: Text(
-                                          'NN',
-                                          style: ThemeTextStyle.roboto,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(bottom: screenHeight * 0.004),
-                                      child: Text(
-                                        'Good Morning',
-                                        style: ThemeTextStyle.good1.copyWith(fontSize: 12),
-                                      ),
-                                    ),
-
-
-                                    const Text('Assalam Walaikum',
-                                      style: ThemeTextStyle.good2,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    // _showDialog3(context);
-                                  },
-                                  icon: Image.asset(
-                                    'assets/images/help.png',
-                                    width: screenWidth * 0.1,
-                                    height: screenWidth * 0.1,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+  ]
                         ),
                       ),
 
-                      // Profile Section
-                      ProfileSection(),
 
                       Column(
                         children: [
+
                           Container(
                             margin: EdgeInsets.only(top: 30),
                             width: screenWidth,
@@ -229,7 +194,55 @@ class _TransactionScreenWalletState extends State<TransactionScreenWallet> {
                                     ),
                                   ),
                                   child: ListTile(
-                                    leading: Icon(Icons.currency_rupee,color: Color(0xffEE6724),size: 30),
+                                    leading: const Text(
+                                      '\u20A8', // Unicode character for the Pakistani Rupee symbol
+                                      style: TextStyle(
+                                        color: Color(0xffEE6724),
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                    title: const Text(
+                                      'Total Wallet Payable Amount',
+                                      style: TextStyle(
+                                        fontFamily: 'Inter',
+                                        color:  Color(0x80000000),
+                                        fontSize: 14,
+                                        height: 1.7,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      dropdownValueForWalletName.trim().toLowerCase() == 'easypaisa'
+                                          ? widget.paramSearchedInvoices["transaction_charges"]["ep_wallet_payable_amount"].toString()
+                                          : dropdownValueForWalletName.trim().toLowerCase() == 'jazzcash'
+                                          ? widget.paramSearchedInvoices["transaction_charges"]["jc_wallet_payable_amount"].toString()
+                                          : widget.paramSearchedInvoices["transaction_charges"]["invoice_amount"].toString(),
+
+
+                                      style: ThemeTextStyle.searchInvoiceListInfo,
+                                    ),
+                                    selected: true,
+                                    onTap: () async {
+
+                                    },
+                                  ),
+                                ),
+                                Container(
+                                  width: screenWidth,
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(color: Color(0x30000000),width: 1),
+                                    ),
+                                  ),
+
+                                  child: ListTile(
+                                    leading: const Text(
+                                      '\u20A8', // Unicode character for the Pakistani Rupee symbol
+                                      style: TextStyle(
+                                        color: Color(0xffEE6724),
+                                        fontSize: 20,
+                                      ),
+                                    ),
                                     title: const Text(
                                       'Invoice Amount',
                                       style: TextStyle(
@@ -250,64 +263,7 @@ class _TransactionScreenWalletState extends State<TransactionScreenWallet> {
                                     },
                                   ),
                                 ),
-                                Container(
-                                  width: screenWidth,
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(color: Color(0x30000000),width: 1),
-                                    ),
-                                  ),
-                                  child: ListTile(
-                                    leading: Icon(Icons.currency_rupee,color: Color(0xffEE6724),size: 30),
-                                    title: const Text(
-                                      'Wallet Charges',
-                                      style: TextStyle(
-                                        fontFamily: 'Inter',
-                                        color:  Color(0x80000000),
-                                        fontSize: 14,
-                                        height: 1.7,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                    subtitle: Text(
-                                      widget.paramSearchedInvoices["transaction_charges"]["wallet_charges"].toString(),
-                                      style: ThemeTextStyle.searchInvoiceListInfo,
-                                    ),
-                                    selected: true,
-                                    onTap: () async {
 
-                                    },
-                                  ),
-                                ),
-                                Container(
-                                  width: screenWidth,
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(color: Color(0x30000000),width: 1),
-                                    ),
-                                  ),
-                                  child: ListTile(
-                                    leading: Icon(Icons.currency_rupee,color: Color(0xffEE6724),size: 30),
-                                    title: const Text(
-                                      'Total Wallet Payable Amount',
-                                      style: TextStyle(
-                                        fontFamily: 'Inter',
-                                        color:  Color(0x80000000),
-                                        fontSize: 14,
-                                        height: 1.7,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                    subtitle: Text(
-                                      widget.paramSearchedInvoices["transaction_charges"]["wallet_payable_amount"].toString(),
-                                      style: ThemeTextStyle.searchInvoiceListInfo,
-                                    ),
-                                    selected: true,
-                                    onTap: () async {
-
-                                    },
-                                  ),
-                                ),
                                 Container(
                                   margin: EdgeInsets.symmetric(vertical: 0,horizontal: 0),
                                   width: screenWidth,
@@ -321,10 +277,6 @@ class _TransactionScreenWalletState extends State<TransactionScreenWallet> {
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text(
-                                              'Please Select Wallet',
-                                              style: ThemeTextStyle.generalSubHeading4.copyWith(fontSize: 16),
-                                            ),
                                             Container(
                                               width: screenWidth,
                                               height: 52.0,
@@ -342,12 +294,15 @@ class _TransactionScreenWalletState extends State<TransactionScreenWallet> {
                                                     icon: const Icon(Icons.arrow_downward),
                                                     elevation: 16,
                                                     style: TextStyle(color: Colors.black54),
-                                                    onChanged: (String? value) {
+                                                    onChanged: (String? value) async {
                                                       setState(() {
                                                         dropdownValueForWalletName = value!;
                                                         getWalletKey(dropdownValueForWalletName);
+                                                        fetchChargesForWallet();
                                                       });
                                                     },
+
+
                                                     items: walletName.map<DropdownMenuItem<String>>((String value) {
                                                       return DropdownMenuItem<String>(
                                                         value: value,
@@ -368,10 +323,7 @@ class _TransactionScreenWalletState extends State<TransactionScreenWallet> {
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text(
-                                              'Wallet Number',
-                                              style: ThemeTextStyle.generalSubHeading4.copyWith(fontSize: 16),
-                                            ),
+
                                             Padding(
                                               padding: const EdgeInsets.fromLTRB(0, 05, 0, 18),
                                               child: SizedBox(
@@ -380,7 +332,9 @@ class _TransactionScreenWalletState extends State<TransactionScreenWallet> {
                                                 child: TextFormField(
                                                   controller: walletNumberController,
                                                   keyboardType: TextInputType.number,
+                                                  inputFormatters:[maskPhone],
                                                   decoration: InputDecoration(
+                                                    labelText: 'Wallet Number',
                                                     focusedBorder: const OutlineInputBorder(
                                                       borderSide: BorderSide(color: GeneralThemeStyle.button, width: 1.0),
                                                     ),
@@ -402,10 +356,7 @@ class _TransactionScreenWalletState extends State<TransactionScreenWallet> {
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text(
-                                              'CNIC',
-                                              style: ThemeTextStyle.generalSubHeading4.copyWith(fontSize: 16),
-                                            ),
+
                                             Padding(
                                               padding: const EdgeInsets.fromLTRB(0, 05, 0, 18),
                                               child: SizedBox(
@@ -414,7 +365,9 @@ class _TransactionScreenWalletState extends State<TransactionScreenWallet> {
                                                 child: TextFormField(
                                                   controller: cnicController,
                                                   keyboardType: TextInputType.number,
+                                                  inputFormatters:[CNIC],
                                                   decoration: InputDecoration(
+                                                    labelText: 'CNIC',
                                                     focusedBorder: const OutlineInputBorder(
                                                       borderSide: BorderSide(color: GeneralThemeStyle.button, width: 1.0),
                                                     ),
@@ -447,12 +400,33 @@ class _TransactionScreenWalletState extends State<TransactionScreenWallet> {
                                             });
                                             if(selectedWalletMnemonicKey=="Select Wallet Name" || walletNumberController.text == "" || cnicController.text == ""){
                                               setState(() {
-                                                ErrorSendingWallet="One or more fields above is empty or Not Selected!";
+                                                // ErrorSendingWallet="One or more fields above is empty or Not Selected!";
+                                                Snacksbar.showErrorSnackBar(
+                                                    context, "One or more fields above is empty or Not Selected!");
                                                 spinner=false;
                                               });
-                                            }else {
+                                            }else if (selectedWalletMnemonicKey=="Easypaisa" && widget.paramSearchedInvoices["transaction_charges"]["ep_wallet_payable_amount"]- widget.paramSearchedInvoices["transaction_charges"]["ep_wallet_charges"] <="0"){
+
                                               setState(() {
-                                                ErrorSendingWallet="";
+                                                // ErrorSendingWallet="One or more fields above is empty or Not Selected!";
+                                                Snacksbar.showErrorSnackBar(
+                                                    context, "Could not proceed to pay ");
+                                                spinner=false;
+                                              });
+                                            }
+                                            else if (selectedWalletMnemonicKey=="Easypaisa" &&  widget.paramSearchedInvoices["transaction_charges"]["jc_wallet_payable_amount"]- widget.paramSearchedInvoices["transaction_charges"]["jc_wallet_charges"] <='0'){
+                                              setState(() {
+                                                // ErrorSendingWallet="One or more fields above is empty or Not Selected!";
+                                                Snacksbar.showErrorSnackBar(
+                                                    context, "Could not proceed to pay ");
+                                                spinner=false;
+                                              });
+                                            }
+                                            else {
+                                              setState(() {
+                                                // Snacksbar.showErrorSnackBar(
+                                                //     context, "");
+                                                 ErrorSendingWallet="";
                                               });
 
                                               ApiData.doWalletJazzCashData["WALLET_NUMBER"] = walletNumberController.text;
@@ -464,7 +438,9 @@ class _TransactionScreenWalletState extends State<TransactionScreenWallet> {
 
                                               if(respWalletApi['status']=="failure"){
                                                 setState(() {
-                                                  ErrorSendingWallet=respWalletApi['error_desc'];
+                                                  Snacksbar.showErrorSnackBar(
+                                                      context, respWalletApi['message']);
+                                                  // ErrorSendingWallet=respWalletApi['message'];
                                                 });
                                               }
 
@@ -483,23 +459,25 @@ class _TransactionScreenWalletState extends State<TransactionScreenWallet> {
                                                 showDialog<String>(
                                                   context: context,
                                                   builder: (BuildContext context) => AlertDialog(
-                                                    title: Text(respWalletApi['status'] as String),
+                                                    title: Text(respWalletApi['status'] as String,style: TextStyle(fontWeight: FontWeight.w900),),
                                                     content: Text(respWalletApi['message'] as String),
                                                     actions: <Widget>[
                                                       TextButton(
                                                         onPressed: () => Navigator.pushReplacementNamed(context, '/pay'),
-                                                        child: const Text('Pay Another'),
+                                                        child:  const Text('Pay Another',style:TextStyle(color:Colors.orange)),
                                                       ),
                                                       TextButton(
                                                         onPressed: () => Navigator.pushReplacementNamed(context, '/dashBoard'),
-                                                        child: const Text('Home'),
+                                                        child:  Text('Home',style:TextStyle( color:Colors.orange)),
                                                       ),
                                                     ],
                                                   ),
                                                 );
                                               }
                                               else {
-                                                ErrorSendingWallet=respWalletApi['message'];
+                                                Snacksbar.showErrorSnackBar(
+                                                    context, respWalletApi['message']);
+                                                // ErrorSendingWallet=respWalletApi['message'];
                                               }
                                               setState(() {
                                                 spinner=false;
@@ -515,7 +493,7 @@ class _TransactionScreenWalletState extends State<TransactionScreenWallet> {
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: Text(
-                                              'Send OTP',
+                                              'Proceed to Pay',
                                               style: ThemeTextStyle.detailPara.copyWith(color: Colors.white),
                                             ),
                                           ),
@@ -584,29 +562,6 @@ class _TransactionScreenWalletState extends State<TransactionScreenWallet> {
 
   }
 }
-
-
-// decoration: const InputDecoration(
-//   labelText: 'Search Invoices',
-//   focusedBorder: OutlineInputBorder(
-//     borderSide: BorderSide(
-//     color: GeneralThemeStyle.button, width: 1.0),
-//   ),
-//   enabledBorder: OutlineInputBorder(
-//     borderRadius: BorderRadius.only(
-//     topLeft: Radius.circular(10),
-//     topRight: Radius.circular(0),
-//     bottomLeft: Radius.circular(10),
-//     bottomRight: Radius.circular(0)
-//   ),
-//   borderSide: BorderSide(
-//     color: GeneralThemeStyle.output, width: 1.0),
-//   ),
-//   labelStyle: TextStyle(
-//     color: Colors.grey,
-//   ),
-// ),
-
 
 InputDecoration inputDecoration({
   required String labelText,

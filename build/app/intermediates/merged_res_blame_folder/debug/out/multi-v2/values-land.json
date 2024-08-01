@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "pk.blinq.app-mergeDebugResources-36:/values-land/values-land.xml",
+            "outputFile": "pk.blinq.app-mergeDebugResources-38:/values-land/values-land.xml",
             "map": [
                 {
-                    "source": "/Users/atifnaseem/.gradle/caches/transforms-3/8f2a194f1b0decc2ed543d963b0ad4af/transformed/appcompat-1.6.1/res/values-land/values-land.xml",
+                    "source": "C:\\Users\\HP\\.gradle\\caches\\transforms-3\\8f2a194f1b0decc2ed543d963b0ad4af\\transformed\\appcompat-1.6.1\\res\\values-land\\values-land.xml",
                     "from": {
                         "startLines": "2,3,4",
                         "startColumns": "4,4,4",

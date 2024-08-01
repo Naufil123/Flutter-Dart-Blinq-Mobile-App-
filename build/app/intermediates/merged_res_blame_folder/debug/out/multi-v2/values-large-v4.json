@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "pk.blinq.app-mergeDebugResources-36:/values-large-v4/values-large-v4.xml",
+            "outputFile": "pk.blinq.app-mergeDebugResources-38:/values-large-v4/values-large-v4.xml",
             "map": [
                 {
-                    "source": "/Users/atifnaseem/.gradle/caches/transforms-3/8f2a194f1b0decc2ed543d963b0ad4af/transformed/appcompat-1.6.1/res/values-large-v4/values-large-v4.xml",
+                    "source": "C:\\Users\\HP\\.gradle\\caches\\transforms-3\\8f2a194f1b0decc2ed543d963b0ad4af\\transformed\\appcompat-1.6.1\\res\\values-large-v4\\values-large-v4.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10",
                         "startColumns": "4,4,4,4,4,4,4,4,4",

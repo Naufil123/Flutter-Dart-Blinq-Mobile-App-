@@ -1,6 +1,5 @@
 import '../appData/ThemeStyle.dart';
 import 'package:flutter/material.dart';
-import 'package:timer_count_down/timer_controller.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
 class Screen1 extends StatefulWidget {
@@ -25,7 +24,7 @@ class _Screen1State extends State<Screen1> {
             Countdown(
               seconds: 2,
               build: (BuildContext context, double time) => Text(""),
-              interval: Duration(milliseconds: 100),
+              interval: const Duration(milliseconds: 100),
               onFinished: () {
                 Navigator.pushReplacementNamed(context, '/splashPage2');
               },
