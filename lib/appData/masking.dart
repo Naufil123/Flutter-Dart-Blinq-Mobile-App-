@@ -7,10 +7,10 @@ var  maskPhone= MaskTextInputFormatter(
 );
 
 
- var maskAlphabet = MaskTextInputFormatter(
-mask: '#####################################################',
-filter: {"#": RegExp(r'[A-Za-z ]')},
-type: MaskAutoCompletionType.lazy,
+var maskAlphabet = MaskTextInputFormatter(
+  mask: '#####################################################',
+  filter: {"#": RegExp(r'[A-Za-z ]')},
+  type: MaskAutoCompletionType.lazy,
 );
 
 String maskedEmail = '';
@@ -29,6 +29,10 @@ String? validateEmail(String? value) {
 }
 var maskPin = MaskTextInputFormatter(
   mask: '####',
+  filter: {"#": RegExp(r'[0-9]')},
+  type: MaskAutoCompletionType.lazy,
+);var maskotpPin = MaskTextInputFormatter(
+  mask: '######',
   filter: {"#": RegExp(r'[0-9]')},
   type: MaskAutoCompletionType.lazy,
 );

@@ -16,7 +16,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:device_marketing_names/device_marketing_names.dart';
 class AuthData {
   // Live Api key
-  //      static String apiKey ="S905TAcU9bD29e48rnCJAsQpwQAqBnZd52OhDZt3jhewqkjhkbJHJBH99Wfno4jugilAOMXZy2dOzcMlCxw7oU2qAgSZP+G6N3AxD3Lw=";
+  //        static String apiKey ="S905TAcU9bD29e48rnCJAsQpwQAqBnZd52OhDZt3jhewqkjhkbJHJBH99Wfno4jugilAOMXZy2dOzcMlCxw7oU2qAgSZP+G6N3AxD3Lw=";
 
 
   // Staging Api key
@@ -41,6 +41,8 @@ class AuthData {
   static const String GetprofileData = '${siteUrl}/api/v2/mobile/user/profile/get/by/username';
   static const String profilesendotp = '${siteUrl}/api/v2/mobile/user/send/otp/for/profile/user';
   static String regMobileNumber = "";
+  static String val = "";
+  static String type = "";
 
   // static String email = "";
   static String isBenificary = "";
@@ -60,7 +62,7 @@ class AuthData {
   static late String biopin = "";
   static int unreadCount = 0;
   static int dotcount = 0;
-  static int timer = 30;
+  static int timer = 22;
   static int status = 0;
   static String countforgototp = "";
   static var counter = 0;
@@ -296,7 +298,7 @@ class AuthData {
     }
   }
 
- static Future<void> profile_sendotp(username, context) async {
+  static Future<void> profile_sendotp(username, context) async {
     Map<String, String> headers = {
       'api_key': apiKey,
       'Content-Type': 'application/json',
@@ -316,9 +318,9 @@ class AuthData {
         final String status = responseBody['status'];
         final String message = responseBody['message'];
         if (status == 'failure') {
-           Snacksbar.ProfileSucess(context,message );
+          Snacksbar.ProfileSucess(context,message );
         } else {
-           Snacksbar.showCustomSucessSnackbar(context, message);
+          Snacksbar.showCustomSucessSnackbar(context, message);
         }
       }
     } catch (e) {
@@ -1006,7 +1008,8 @@ class AuthData {
         if (status == 'failure') {
           Snacksbar.showErrorSnackBar(context, message);
         }
-         if (status == 'success' && search.contains('@')){
+        if (status == 'success' && search.contains('@')){
+          val=search;
           if (email1.isEmpty) {
             UpdateProfile(
               AuthData.regMobileNumber,
@@ -1020,9 +1023,12 @@ class AuthData {
               context,
 
             );
+            // Snacksbar.showCustomSucessSnackbar(context,"Email edit Sucessfully");
+            val=search;
 
           }
           if (email1.isNotEmpty && email2.isEmpty) {
+            val=search;
             UpdateProfile(
               AuthData.regMobileNumber,
               AuthData.regFullName,
@@ -1034,8 +1040,11 @@ class AuthData {
               email3,
               context,
             );
+
+            Snacksbar.showCustomSucessSnackbar(context,"Email edit Sucessfully");
           }
           if (email1.isNotEmpty && email2.isNotEmpty && email3.isEmpty) {
+            val=search;
             UpdateProfile(
               AuthData.regMobileNumber,
               AuthData.regFullName,
@@ -1048,9 +1057,10 @@ class AuthData {
               context,
             );
 
+            Snacksbar.showCustomSucessSnackbar(context,"Email edit Sucessfully");
           }
 
-      }else if (status == 'success' && !search.contains('@')) {
+        }else if (status == 'success' && !search.contains('@')) {
           if (mobile1.isEmpty) {
             UpdateProfile(
               AuthData.regMobileNumber,
@@ -1064,6 +1074,8 @@ class AuthData {
               context,
 
             );
+            val=search;
+            Snacksbar.showCustomSucessSnackbar(context,"Mobile edit Sucessfully");
           }
           if (mobile1.isNotEmpty && mobile2.isEmpty) {
             UpdateProfile(
@@ -1077,8 +1089,11 @@ class AuthData {
               email3,
               context,
             );
+            val=search;
+            Snacksbar.showCustomSucessSnackbar(context,"Mobile edit Sucessfully");
           }
           if (mobile1.isNotEmpty && mobile2.isNotEmpty && mobile3.isEmpty) {
+            val=search;
             UpdateProfile(
               AuthData.regMobileNumber,
               AuthData.regFullName,
@@ -1090,6 +1105,8 @@ class AuthData {
               email3,
               context,
             );
+
+            Snacksbar.showCustomSucessSnackbar(context,"Mobile edit Sucessfully");
           }
         }
       } else {
@@ -1124,11 +1141,12 @@ class AuthData {
         } else if (status == 'success') {
 
           if (value=="value" && search.contains('@')) {
+            val=search;
             UpdateProfile(
               AuthData.regMobileNumber,
               AuthData.regFullName,
               mobile1,
-             AuthData.mobile2,
+              AuthData.mobile2,
               AuthData.mobile3,
               search,
               email2,
@@ -1136,6 +1154,11 @@ class AuthData {
               context,
 
             );
+            // Snacksbar.showCustomSucessSnackbar(context,"Email edit Sucessfully");
+
+
+            Snacksbar.showCustomSucessSnackbar(context,"Email edit Sucessfully");
+
 
           } if (value=="value1"&& search.contains('@')) {
             UpdateProfile(
@@ -1150,6 +1173,9 @@ class AuthData {
               context,
 
             );
+            val=search;
+
+            // Snacksbar.showCustomSucessSnackbar(context,"Email edit Sucessfully");
 
           } if (value=="value2"&& search.contains('@')) {
             UpdateProfile(
@@ -1164,13 +1190,17 @@ class AuthData {
               context,
 
             );
+            // Snacksbar.showCustomSucessSnackbar(context,"Email edit Sucessfully");
+
+            val=search;
+
 
           } if (value=="value" && !search.contains('@')) {
             UpdateProfile(
               AuthData.regMobileNumber,
               AuthData.regFullName,
               search,
-             AuthData.mobile2,
+              AuthData.mobile2,
               AuthData.mobile3,
               email1,
               email2,
@@ -1178,6 +1208,10 @@ class AuthData {
               context,
 
             );
+            // Snacksbar.showCustomSucessSnackbar(context,"Mobile edit Sucessfully");
+            val=search;
+
+
 
           } if (value=="value1"&& !search.contains('@')) {
             UpdateProfile(
@@ -1192,6 +1226,9 @@ class AuthData {
               context,
 
             );
+            // Snacksbar.showCustomSucessSnackbar(context,"Mobile edit Sucessfully");
+            val=search;
+
 
           } if (value=="value2"&& !search.contains('@')) {
             UpdateProfile(
@@ -1206,6 +1243,9 @@ class AuthData {
               context,
 
             );
+            // Snacksbar.showCustomSucessSnackbar(context,"Mobile edit Sucessfully");
+            val=search;
+
 
           }
 
@@ -1245,7 +1285,7 @@ class AuthData {
       final String message = responseBody['message'];
       if (status == 'success') {
         print("Mobile add sucessfully");
-        Snacksbar.showSuccessSnackBar(context, message);
+        Snacksbar.showCustomSucessSnackbar(context,"Sucessfully Add");
       }
       if (status == 'failure') {
         print("something went wrong");
@@ -1284,9 +1324,9 @@ class AuthData {
           email1 = jsonData['email'] ?? '';
           email2 = jsonData['email2'] ?? '';
           email3 = jsonData['email3'] ?? '';
-print("mobile 1 data :$mobile1");print("mobile 2 data :$mobile2");
-print("mobile 3 data :$mobile3");print("email 1 data :$email1");print("email 2 data :$email2");
-print("email 3 data :$email3");
+          print("mobile 1 data :$mobile1");print("mobile 2 data :$mobile2");
+          print("mobile 3 data :$mobile3");print("email 1 data :$email1");print("email 2 data :$email2");
+          print("email 3 data :$email3");
           print("Success");
         }
       } else {
@@ -1297,31 +1337,31 @@ print("email 3 data :$email3");
     }
   }
 
-    //     if (response.statusCode == 200) {
-    //       final Map<String, dynamic> responseBody = json.decode(response.body);
-    //       final String status = responseBody['status'];
-    //       final String message = responseBody['message'];
-    //       print('Status: $status');
-    //       print('Message: $message');
-    //
-    //       if (status == 'failure') {
-    //         print("Something went wrong");
-    //       } else {
-    //         if (responseBody.containsKey('token')) {
-    //           mobile1 = responseBody['mobile1'];
-    //           mobile2 = responseBody['mobile2'];
-    //           mobile3 = responseBody['mobile3'];
-    //           email1 = responseBody['email1'];
-    //           email2 = responseBody['email2'];
-    //           email3 = responseBody['email3'];
-    //           print("Success");
-    //         }
-    //       }
-    //     } else {
-    //       print("Failed to fetch profile data. Status code: ${response.statusCode}");
-    //     }
-    //   } catch (error) {
-    //     print("An error occurred: $error");
-    //   }
-    // }
-  }
+//     if (response.statusCode == 200) {
+//       final Map<String, dynamic> responseBody = json.decode(response.body);
+//       final String status = responseBody['status'];
+//       final String message = responseBody['message'];
+//       print('Status: $status');
+//       print('Message: $message');
+//
+//       if (status == 'failure') {
+//         print("Something went wrong");
+//       } else {
+//         if (responseBody.containsKey('token')) {
+//           mobile1 = responseBody['mobile1'];
+//           mobile2 = responseBody['mobile2'];
+//           mobile3 = responseBody['mobile3'];
+//           email1 = responseBody['email1'];
+//           email2 = responseBody['email2'];
+//           email3 = responseBody['email3'];
+//           print("Success");
+//         }
+//       }
+//     } else {
+//       print("Failed to fetch profile data. Status code: ${response.statusCode}");
+//     }
+//   } catch (error) {
+//     print("An error occurred: $error");
+//   }
+// }
+}

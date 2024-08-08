@@ -312,50 +312,70 @@ void reload_Dailough(BuildContext context, String title, String description, Ref
     },
   );
 }
-void showProfileUpdateMobileDialog(
-
-    BuildContext context, String title, String description) {
+void showProfileUpdateMobileDialog(BuildContext context, String title, String description) {
   final TextEditingController otpController = TextEditingController();
   final TextEditingController codeController = TextEditingController();
 
   showDialog(
+    barrierDismissible: false,
     context: context,
     builder: (BuildContext context) {
+      double screenWidth = MediaQuery.of(context).size.width;
+      double screenHeight = MediaQuery.of(context).size.height;
       String newMobileNumber = AuthData.regMobileNumber;
       return AlertDialog(
-        title: const Text('Add Mobile Number'),
-        content: TextFormField(
-          controller: otpController,
-          keyboardType: TextInputType.number,
-          inputFormatters: [maskPhone],
-          enableSuggestions: false,
-          autocorrect: false,
-          decoration: InputDecoration(
-            prefixIcon: const Icon(Icons.phone_android, color: Colors.grey),
-            labelText: 'Add Your Mobile ',
-            focusedBorder: const OutlineInputBorder(
-              borderSide: BorderSide(
-                  color: GeneralThemeStyle.button, width: 1.0),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.0),
-              borderSide: const BorderSide(
-                  color: GeneralThemeStyle.output, width: 1.0),
-            ),
-            labelStyle: const TextStyle(
-              color: Colors.grey,
-            ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        title: const Text(
+          'Add Mobile Number',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: SizedBox(
+          width: screenWidth,
+          height: 100.0,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                description,
+                style: const TextStyle(color: Colors.grey),
+              ),
+              const SizedBox(height: 20.0),
+              TextFormField(
+                controller: otpController,
+                keyboardType: TextInputType.number,
+                inputFormatters: [maskPhone],
+                enableSuggestions: false,
+                autocorrect: false,
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.phone_android, color: Colors.grey),
+                  labelText: 'Add Your Mobile',
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.orange, width: 2.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+                  ),
+                  labelStyle: const TextStyle(color: Colors.grey),
+                ),
+                onChanged: (value) {
+                  newMobileNumber = value;
+                },
+              ),
+            ],
           ),
-          onChanged: (value) {
-            newMobileNumber = value;
-          },
         ),
         actions: <Widget>[
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text('Cancel'),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.orange),
+            ),
           ),
           TextButton(
             onPressed: () {
@@ -365,37 +385,61 @@ void showProfileUpdateMobileDialog(
                 Snacksbar.showCustomSnackbar(context, "Invalid number");
               } else if (otpController.text[0] != '0' || otpController.text[1] != '3') {
                 Snacksbar.showCustomSnackbar(context, "Invalid number");
-              } else {
+              }
+              else if(AuthData.mobile1.isNotEmpty && AuthData.mobile1==otpController.text){
+                Snacksbar.showCustomSnackbar(context, "Number Alredy dded");
+              } else if(AuthData.mobile2.isNotEmpty && AuthData.mobile2==otpController.text){
+                Snacksbar.showCustomSnackbar(context, "Number Alredy dded");
+              } else if(AuthData.mobile3.isNotEmpty && AuthData.mobile3==otpController.text){
+                Snacksbar.showCustomSnackbar(context, "Number Alredy dded");
+              }else {
                 Navigator.of(context).pop();
                 AuthData.profile_sendotp(otpController.text, context);
                 showDialog(
+                  barrierDismissible: false,
                   context: context,
                   builder: (BuildContext context) {
                     String otp = '';
                     return AlertDialog(
-                      title: const Text('Enter OTP'),
-                      content: TextFormField(
-                        controller: codeController,
-                        onChanged: (value) {
-                          otp = value;
-                        },
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          hintText: 'Enter OTP',
-                          prefixIcon: const Icon(
-                              Icons.lock_outline, color: Colors.grey),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: GeneralThemeStyle.button, width: 1.0),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                            borderSide: const BorderSide(
-                                color: GeneralThemeStyle.output, width: 1.0),
-                          ),
-                          labelStyle: const TextStyle(
-                            color: Colors.grey,
-                          ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      title: const Text(
+                        'Enter OTP',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      content: SizedBox(
+                        width: screenWidth,
+                        height: 130.0,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Text(
+                              "Please enter the OTP sent to your mobile.",
+                              style: const TextStyle(color: Colors.grey),
+                            ),
+                            const SizedBox(height: 20.0),
+                            TextFormField(
+                              inputFormatters: [maskotpPin],
+                              controller: codeController,
+                              onChanged: (value) {
+                                otp = value;
+                              },
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                hintText: 'Enter OTP',
+                                prefixIcon: const Icon(Icons.lock_outline, color: Colors.grey),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.orange, width: 2.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+                                ),
+                                labelStyle: const TextStyle(color: Colors.grey),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       actions: <Widget>[
@@ -403,27 +447,38 @@ void showProfileUpdateMobileDialog(
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: const Text('Cancel'),
+                          child: const Text(
+                            'Cancel',
+                            style: TextStyle(color: Colors.orange),
+                          ),
                         ),
                         TextButton(
                           onPressed: () {
-                            AuthData.profilecodeverify(
-                                otpController.text, codeController.text,
-                                context);
-//                             setState(() {
-// // AuthData.regMobileNumber = newMobileNumber;
-//                             });
-                            Navigator.of(context).pop();
+                            if (codeController.text.isEmpty) {
+                              Snacksbar.showCustomSnackbar(context, "Please fill all required fields");
+                            }
+                            else {
+                              AuthData.profilecodeverify(
+                                  otpController.text, codeController.text,
+                                  context);
+                              Navigator.of(context).pop();
+                            }
                           },
-                          child: const Text('Save'),
+                          child: const Text(
+                            'Save',
+                            style: TextStyle(color: Colors.orange),
+                          ),
                         ),
                       ],
                     );
                   },
                 );
-              };
+              }
             },
-            child: const Text('Save'),
+            child: const Text(
+              'Save',
+              style: TextStyle(color: Colors.orange),
+            ),
           ),
         ],
       );
@@ -432,92 +487,123 @@ void showProfileUpdateMobileDialog(
 }
 
 
-
-
 void showProfileUpdateEmailDialog(
-
     BuildContext context, String title, String description) {
   final TextEditingController otpController = TextEditingController();
   final TextEditingController codeController = TextEditingController();
+  double screenWidth = MediaQuery.of(context).size.width;
+  double screenHeight = MediaQuery.of(context).size.height;
+
   showDialog(
+    barrierDismissible: false,
     context: context,
     builder: (BuildContext context) {
       String newMobileNumber = AuthData.regMobileNumber;
       return AlertDialog(
-        title: const Text('Add Email Address'),
-        content: TextFormField(
-          controller: otpController,
-          keyboardType: TextInputType.text,
-          // inputFormatters: [maskPhone],
-          enableSuggestions: false,
-          autocorrect: false,
-          decoration: InputDecoration(
-            prefixIcon: const Icon(Icons.phone_android, color: Colors.grey),
-            labelText: 'Add Your Email ',
-            focusedBorder: const OutlineInputBorder(
-              borderSide: BorderSide(
-                  color: GeneralThemeStyle.button, width: 1.0),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.0),
-              borderSide: const BorderSide(
-                  color: GeneralThemeStyle.output, width: 1.0),
-            ),
-            labelStyle: const TextStyle(
-              color: Colors.grey,
-            ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        title: const Text('Add Email Address', style: TextStyle(fontWeight: FontWeight.bold)),
+        content: SizedBox(
+          width: screenWidth,
+          height: 100.0,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                description,
+                style: const TextStyle(color: Colors.grey),
+              ),
+              const SizedBox(height: 20.0),
+              TextFormField(
+                controller: otpController,
+                keyboardType: TextInputType.emailAddress,
+                enableSuggestions: false,
+                autocorrect: false,
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.email, color: Colors.grey),
+                  labelText: 'Enter Your Email',
+                  focusedBorder:  OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.orange, width: 2.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+                  ),
+                  labelStyle: const TextStyle(color: Colors.grey),
+                ),
+                onChanged: (value) {
+                  newMobileNumber = value;
+                },
+              ),
+            ],
           ),
-          onChanged: (value) {
-            newMobileNumber = value;
-          },
         ),
         actions: <Widget>[
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text('Cancel'),
+            child: const Text('Cancel', style: TextStyle(color: Colors.orange)),
           ),
           TextButton(
             onPressed: () {
               if (otpController.text.isEmpty) {
-                Snacksbar.showCustomSnackbar(
-                    context, "Please fill all required fields");
-              } else if (!otpController.text.contains('@')) {
+                Snacksbar.showCustomSnackbar(context, "Please fill all required fields");
+              } else if (!otpController.text.contains('@') || !otpController.text.contains('.')) {
                 Snacksbar.showCustomSnackbar(context, "Invalid Email");
-              } else {
+              }  else if(AuthData.email1.isNotEmpty && AuthData.email1==otpController.text){
+                Snacksbar.showCustomSnackbar(context, "Email Alredy added");
+              } else if(AuthData.email2.isNotEmpty && AuthData.email2==otpController.text){
+                Snacksbar.showCustomSnackbar(context, "Email Alredy added");
+              } else if(AuthData.email3.isNotEmpty && AuthData.email3==otpController.text){
+                Snacksbar.showCustomSnackbar(context, "Email Alredy added");
+              }else {
                 Navigator.of(context).pop();
                 AuthData.profile_sendotp(otpController.text, context);
 
-                //AuthData.email1 = otpController.text;
                 showDialog(
+                  barrierDismissible: false,
                   context: context,
                   builder: (BuildContext context) {
                     String otp = '';
                     return AlertDialog(
-                      title: const Text('Enter OTP'),
-                      content: TextFormField(
-                        controller: codeController,
-                        onChanged: (value) {
-                          otp = value;
-                        },
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          hintText: 'Enter OTP',
-                          prefixIcon: const Icon(
-                              Icons.lock_outline, color: Colors.grey),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: GeneralThemeStyle.button, width: 1.0),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                            borderSide: const BorderSide(
-                                color: GeneralThemeStyle.output, width: 1.0),
-                          ),
-                          labelStyle: const TextStyle(
-                            color: Colors.grey,
-                          ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      title: const Text('Enter OTP', style: TextStyle(fontWeight: FontWeight.bold)),
+                      content: SizedBox(
+                        width: screenWidth,
+                        height: 100.0,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Text(
+                              "Please enter the OTP sent to your email.",
+                              style: const TextStyle(color: Colors.grey),
+                            ),
+                            const SizedBox(height: 20.0),
+                            TextFormField(
+                              inputFormatters: [maskotpPin],
+                              controller: codeController,
+                              onChanged: (value) {
+                                otp = value;
+                              },
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                hintText: 'Enter OTP',
+                                prefixIcon: const Icon(Icons.lock_outline, color: Colors.grey),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.orange, width: 2.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+                                ),
+                                labelStyle: const TextStyle(color: Colors.grey),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       actions: <Widget>[
@@ -525,125 +611,155 @@ void showProfileUpdateEmailDialog(
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: const Text('Cancel'),
+                          child: const Text('Cancel', style: TextStyle(color: Colors.orange)),
                         ),
                         TextButton(
                           onPressed: () {
-                            AuthData.profilecodeverify(
-                                otpController.text, codeController.text,
-                                context);
-                            // setState(() {
-                            //   AuthData.regMobileNumber = newMobileNumber;
-                            // });
-                            Navigator.of(context).pop(); // Close OTP dialog
+
+                            if (codeController.text.isEmpty) {
+                              Snacksbar.showCustomSnackbar(context, "Please fill all required fields");
+                            }
+                            else {
+                              AuthData.profilecodeverify(
+                                  otpController.text, codeController.text,
+                                  context);
+                              Navigator.of(context).pop(); // Close OTP dialog
+                            }
                           },
-                          child: Text('Save'),
+                          child: const Text('Save', style: TextStyle(color: Colors.orange)),
                         ),
                       ],
                     );
                   },
                 );
-              };
+              }
             },
-            child: const Text('Save'),
+            child: const Text('Save', style: TextStyle(color: Colors.orange)),
           ),
         ],
-
       );
     },
   );
 }
 
 
-void showeditmobileprofile(
-
-    BuildContext context, String title, String description,value) {
+Future<void> showeditMobileprofile(BuildContext context, String title, String description, value) async {
   final TextEditingController otpController = TextEditingController();
   final TextEditingController codeController = TextEditingController();
+  double screenWidth = MediaQuery.of(context).size.width;
 
   showDialog(
+    barrierDismissible: false,
     context: context,
     builder: (BuildContext context) {
-      // String newMobileNumber = AuthData.regMobileNumber;
       return AlertDialog(
-        title: const Text('Edit your Mobile'),
-
-        content: TextFormField(
-          controller: otpController,
-          keyboardType: TextInputType.number,
-           inputFormatters: [maskPhone],
-          enableSuggestions: false,
-          autocorrect: false,
-          decoration: InputDecoration(
-            prefixIcon: const Icon(Icons.phone_android, color: Colors.grey),
-            labelText: 'Edit Your Mobilr ',
-            focusedBorder: const OutlineInputBorder(
-              borderSide: BorderSide(
-                  color: GeneralThemeStyle.button, width: 1.0),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.0),
-              borderSide: const BorderSide(
-                  color: GeneralThemeStyle.output, width: 1.0),
-            ),
-            labelStyle: const TextStyle(
-              color: Colors.grey,
-            ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        title: const Text('Edit your Mobile', style: TextStyle(fontWeight: FontWeight.bold)),
+        content: SizedBox(
+          width: screenWidth,
+          height: 100.0,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                description,
+                style: const TextStyle(color: Colors.grey),
+              ),
+              const SizedBox(height: 20.0),
+              TextFormField(
+                controller: otpController,
+                keyboardType: TextInputType.number,
+                inputFormatters: [maskPhone],
+                enableSuggestions: false,
+                autocorrect: false,
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.phone_android, color: Colors.grey),
+                  labelText: 'Edit Your Mobile',
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.orange, width: 2.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+                  ),
+                  labelStyle: const TextStyle(color: Colors.grey),
+                ),
+              ),
+            ],
           ),
-          // onChanged: (value) {
-          //   newMobileNumber = value;
-          // },
         ),
         actions: <Widget>[
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text('Cancel'),
+            child: const Text('Cancel', style: TextStyle(color: Colors.orange)),
           ),
           TextButton(
-
             onPressed: () {
+              AuthData.val = otpController.text;
+              AuthData.type = codeController.text;
               if (otpController.text.isEmpty) {
-                Snacksbar.showCustomSnackbar(
-                    context, "Please fill all required fields");
+                Snacksbar.showCustomSnackbar(context, "Please fill all required fields");
               } else if (otpController.text.length > 11) {
                 Snacksbar.showCustomSnackbar(context, "Invalid number");
-              } else if (otpController.text[0] != '0' ||
-                  otpController.text[1] != '3') {
+              } else if (otpController.text[0] != '0' || otpController.text[1] != '3') {
                 Snacksbar.showCustomSnackbar(context, "Invalid number");
+              }
+              else if(AuthData.mobile1.isNotEmpty && AuthData.mobile1==otpController.text) {
+                Snacksbar.showCustomSnackbar(context, "Number is Already Added");
+              }  else if(AuthData.mobile2.isNotEmpty && AuthData.mobile2==otpController.text) {
+                Snacksbar.showCustomSnackbar(context, "Number is Already Added");
+              }  else if(AuthData.mobile3.isNotEmpty && AuthData.mobile3==otpController.text) {
+                Snacksbar.showCustomSnackbar(context, "Number is Already Added");
               } else {
                 Navigator.of(context).pop();
                 AuthData.profile_sendotp(otpController.text, context);
 
                 showDialog(
+                  barrierDismissible: false,
                   context: context,
                   builder: (BuildContext context) {
                     String otp = '';
                     return AlertDialog(
-                      title: const Text('Enter OTP'),
-                      content: TextFormField(
-                        controller: codeController,
-                        onChanged: (value) {
-                          otp = value;
-                        },
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          hintText: 'Enter OTP',
-                          prefixIcon: const Icon(
-                              Icons.lock_outline, color: Colors.grey),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: GeneralThemeStyle.button, width: 1.0),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                            borderSide: const BorderSide(
-                                color: GeneralThemeStyle.output, width: 1.0),
-                          ),
-                          labelStyle: const TextStyle(
-                            color: Colors.grey,
-                          ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      title: const Text('Enter OTP', style: TextStyle(fontWeight: FontWeight.bold)),
+                      content: SizedBox(
+                        width: screenWidth,
+                        height: 130.0,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Text(
+                              "Please enter the OTP sent to your mobile.",
+                              style: const TextStyle(color: Colors.grey),
+                            ),
+                            const SizedBox(height: 20.0),
+                            TextFormField(
+                              inputFormatters: [maskotpPin],
+                              controller: codeController,
+                              onChanged: (value) {
+                                otp = value;
+                              },
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                hintText: 'Enter OTP',
+                                prefixIcon: const Icon(Icons.lock_outline, color: Colors.grey),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.orange, width: 2.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+                                ),
+                                labelStyle: const TextStyle(color: Colors.grey),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       actions: <Widget>[
@@ -651,140 +767,180 @@ void showeditmobileprofile(
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: const Text('Cancel'),
+                          child: const Text('Cancel', style: TextStyle(color: Colors.orange)),
                         ),
                         TextButton(
                           onPressed: () {
-                            AuthData.editprofilecodeverify(
-                                otpController.text, codeController.text, value,
-                                context);
-                            Navigator.of(context).pop();
+                            if (codeController.text.isEmpty) {
+                              Snacksbar.showCustomSnackbar(context, "Please fill all required fields");
+                            }
+                            else {
+                              AuthData.type=value;
+                              AuthData.editprofilecodeverify(
+                                  otpController.text, codeController.text,
+                                  value, context);
+                              Navigator.of(context).pop();
+                            }
                           },
-                          child: const Text('Save'),
+                          child: const Text('Save', style: TextStyle(color: Colors.orange)),
                         ),
                       ],
                     );
                   },
                 );
-              };
+              }
             },
-            child: const Text('Save'),
+            child: const Text('Save', style: TextStyle(color: Colors.orange)),
           ),
         ],
       );
     },
   );
 }
-  void showeditEmailprofile(BuildContext context, String title,
-      String description, value) {
-    final TextEditingController otpController = TextEditingController();
-    final TextEditingController codeController = TextEditingController();
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Edit your Email'),
+void showeditEmailprofile(BuildContext context, String title, String description, value) {
+  final TextEditingController otpController = TextEditingController();
+  final TextEditingController codeController = TextEditingController();
+  double screenWidth = MediaQuery.of(context).size.width;
 
-          content: TextFormField(
-            controller: otpController,
-            keyboardType: TextInputType.text,
-            // inputFormatters: [maskPhone],
-            enableSuggestions: false,
-            autocorrect: false,
-            decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.phone_android, color: Colors.grey),
-              labelText: 'Edit Your Email ',
-              focusedBorder: const OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: GeneralThemeStyle.button, width: 1.0),
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        title: const Text('Edit your Email', style: TextStyle(fontWeight: FontWeight.bold)),
+        content: SizedBox(
+          width: screenWidth,
+          height: 100.0,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                description,
+                style: const TextStyle(color: Colors.grey),
               ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-                borderSide: const BorderSide(
-                    color: GeneralThemeStyle.output, width: 1.0),
+              const SizedBox(height: 20.0),
+              TextFormField(
+                controller: otpController,
+                keyboardType: TextInputType.emailAddress,
+                enableSuggestions: false,
+                autocorrect: false,
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.email, color: Colors.grey),
+                  labelText: 'Edit Your Email',
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.orange, width: 2.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+                  ),
+                  labelStyle: const TextStyle(color: Colors.grey),
+                ),
               ),
-              labelStyle: const TextStyle(
-                color: Colors.grey,
-              ),
-            ),
+            ],
           ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Cancel', style: TextStyle(color: Colors.orange)),
+          ),
+          TextButton(
+            onPressed: () {
+              if (otpController.text.isEmpty) {
+                Snacksbar.showCustomSnackbar(context, "Please fill all required fields");
+              } else if (!otpController.text.contains('@') || !otpController.text.contains('.')) {
+                Snacksbar.showCustomSnackbar(context, "Invalid Email");
+              }
+              else if(AuthData.email1.isNotEmpty && AuthData.email1==otpController.text) {
+                Snacksbar.showCustomSnackbar(context, "Email is Already Added");
+              }  else if(AuthData.email2.isNotEmpty && AuthData.email2==otpController.text) {
+                Snacksbar.showCustomSnackbar(context, "Email is Already Added");
+              }  else if(AuthData.email3.isNotEmpty && AuthData.email3==otpController.text) {
+                Snacksbar.showCustomSnackbar(context, "Email is Already Added");
+              } else {
                 Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
+                AuthData.profile_sendotp(otpController.text, context);
 
-              onPressed: () {
-                if (otpController.text.isEmpty) {
-                  Snacksbar.showCustomSnackbar(
-                      context, "Please fill all required fields");
-                } else if (!otpController.text.contains('@')) {
-                  Snacksbar.showCustomSnackbar(context, "Invalid Email");
-                } else {
-                  Navigator.of(context).pop();
-                  AuthData.profile_sendotp(otpController.text, context);
-
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                     String otp = '';
-                      return AlertDialog(
-                        title: const Text('Enter OTP'),
-                        content: TextFormField(
-                          controller: codeController,
-                          onChanged: (value) {
-                            otp = value;
-                          },
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            hintText: 'Enter OTP',
-                            prefixIcon: const Icon(
-                                Icons.lock_outline, color: Colors.grey),
-                            focusedBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: GeneralThemeStyle.button, width: 1.0),
+                showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (BuildContext context) {
+                    String otp = '';
+                    return AlertDialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      title: const Text('Enter OTP', style: TextStyle(fontWeight: FontWeight.bold)),
+                      content: SizedBox(
+                        width: screenWidth,
+                        height: 100.0,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            const Text(
+                              "Please enter the OTP sent to your email.",
+                              style: TextStyle(color: Colors.grey),
                             ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                              borderSide: const BorderSide(
-                                  color: GeneralThemeStyle.output, width: 1.0),
+                            const SizedBox(height: 20.0),
+                            TextFormField(
+                              controller: codeController,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [maskotpPin],
+                              decoration: InputDecoration(
+                                hintText: 'Enter OTP',
+                                prefixIcon: const Icon(Icons.lock_outline, color: Colors.grey),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.orange, width: 2.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+                                ),
+                                labelStyle: const TextStyle(color: Colors.grey),
+                              ),
                             ),
-                            labelStyle: const TextStyle(
-                              color: Colors.grey,
-                            ),
-                          ),
+                          ],
                         ),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('Cancel'),
-                          ),
-                          TextButton(
-                            onPressed: () {
+                      ),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('Cancel', style: TextStyle(color: Colors.orange)),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            if (codeController.text.isEmpty) {
+                              Snacksbar.showCustomSnackbar(context, "Please fill all required fields");
+                            }
+                            else {
+                              AuthData.type=value;
                               AuthData.editprofilecodeverify(
                                   otpController.text, codeController.text,
-                                  value,
-                                  context);
+                                  value, context);
                               Navigator.of(context).pop();
-                            },
-                            child: const Text('Save'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                };
-              },
-              child: const Text('Save'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+                            }
+                          },
+                          child: const Text('Save', style: TextStyle(color: Colors.orange)),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
+            },
+            child: const Text('Save', style: TextStyle(color: Colors.orange)),
+          ),
+        ],
+      );
+    },
+  );
+}
