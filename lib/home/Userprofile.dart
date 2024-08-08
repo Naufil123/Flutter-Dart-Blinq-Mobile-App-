@@ -56,6 +56,7 @@ class _Profile2State extends State<Profile2> with SingleTickerProviderStateMixin
   late Animation<Offset> _slideAnimation;
   final TextEditingController otpController = TextEditingController();
   final TextEditingController codeController = TextEditingController();
+  int time=40;
   bool isLoading = true;
 
   @override
@@ -91,7 +92,41 @@ class _Profile2State extends State<Profile2> with SingleTickerProviderStateMixin
       Navigator.of(context).pop();
     });
   }
-
+  void _updateMobileNumber() {
+    setState(() {
+      if (AuthData.val != ''&& !AuthData.val.contains('@') && AuthData.type == 'value') {
+        AuthData.mobile1 = AuthData.val;
+      } else if (AuthData.val != ''&& !AuthData.val.contains('@')&& AuthData.type == 'value1') {
+        AuthData.mobile2 = AuthData.val;
+      } else if (AuthData.val != '' && !AuthData.val.contains('@')&& AuthData.type == 'value2') {
+        AuthData.mobile3 = AuthData.val;
+      }  else if (AuthData.val != '' && AuthData.val.contains('@')&& AuthData.type == 'value') {
+        AuthData.email1 = AuthData.val;
+      } else if (AuthData.val != '' && AuthData.val.contains('@')&& AuthData.type == 'value1') {
+        AuthData.email2 = AuthData.val;
+      } else if (AuthData.val != '' && AuthData.val.contains('@')&& AuthData.type == 'value2') {
+        AuthData.email3 = AuthData.val;
+      }
+    });
+  } void _addMobileNumber() {
+    setState(() {
+      if (AuthData.val.isNotEmpty && !AuthData.val.contains('@') && AuthData.mobile1.isEmpty) {
+        AuthData.mobile1 = AuthData.val;
+      }
+      else if (AuthData.val.isNotEmpty && !AuthData.val.contains('@') && AuthData.mobile2.isEmpty) {
+        AuthData.mobile2 = AuthData.val;
+      } else if(AuthData.val.isNotEmpty && !AuthData.val.contains('@') && AuthData.mobile3.isEmpty) {
+        AuthData.mobile3 = AuthData.val;
+      }
+      else if (AuthData.val.isNotEmpty && AuthData.val.contains('@') && AuthData.email1.isEmpty) {
+        AuthData.email1 = AuthData.val;
+      } else if (AuthData.val.isNotEmpty && AuthData.val.contains('@') && AuthData.email2.isEmpty) {
+        AuthData.email2 = AuthData.val;
+      } else if (AuthData.val.isNotEmpty && AuthData.val.contains('@') && AuthData.email3.isEmpty) {
+        AuthData.email3 = AuthData.val;
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery
@@ -262,6 +297,7 @@ class _Profile2State extends State<Profile2> with SingleTickerProviderStateMixin
                           showAddIcon: true,
                         ),
                         buildProfileDetailRow(
+
                           context,
                           icon: Icons.email_rounded,
                           label: 'Email',
@@ -324,16 +360,21 @@ class _Profile2State extends State<Profile2> with SingleTickerProviderStateMixin
               if (showAddIcon && (value == "" || value1 == "" || value2 == ""))
                 IconButton(
                   icon: const Icon(Icons.add, color: Colors.deepOrange),
-                  onPressed: () {
+                  onPressed: () async {
+
                     showProfileUpdateMobileDialog(context, "", "");
+                    await Future.delayed(Duration(seconds: time));
+                    _addMobileNumber();
                   },
                 ),
               if (showEmailAddIcon &&
                   (value == "" || value1 == "" || value2 == ""))
                 IconButton(
                   icon: const Icon(Icons.add, color: Colors.deepOrange),
-                  onPressed: () {
+                  onPressed: () async {
                     showProfileUpdateEmailDialog(context, '', '');
+                    await Future.delayed(Duration(seconds: 60));
+                    _addMobileNumber();
                   },
                 ),
             ],
@@ -378,8 +419,21 @@ class _Profile2State extends State<Profile2> with SingleTickerProviderStateMixin
                 children: [
                   if (value.contains('@'))
                     GestureDetector(
-                      onTap: () {
+                      onTap: () async {
+
                         showeditEmailprofile(context, '', '', valueType);
+                        await Future.delayed(Duration(seconds: 60));
+                        _updateMobileNumber();
+                        //  setState(() {
+                        //    if (  AuthData.val !='' && AuthData.type == 'value') {
+                        //      AuthData.email1 = AuthData.val;
+                        //    } else if ( AuthData.val !='' && AuthData.type == 'value1') {
+                        //      AuthData.email2 =AuthData.val;
+                        //    } else if ( AuthData.val !='' && AuthData.type == 'value2') {
+                        //      AuthData.email3 = AuthData.val;
+                        //    }
+                        // // Snacksbar.showCustomSucessSnackbar(context,"Email edit Sucessfully");
+                        //  });
                       },
                       child: const Padding(
                         padding: EdgeInsets.all(0),
@@ -412,21 +466,31 @@ class _Profile2State extends State<Profile2> with SingleTickerProviderStateMixin
                                   TextButton(
                                     onPressed: () {
                                       if (valueType == 'value') {
-                                        setState(() {
-                                          AuthData.UpdateProfile(
-                                            AuthData.regMobileNumber,
-                                            AuthData.regFullName,
-                                            AuthData.mobile1,
-                                            AuthData.mobile2,
-                                            AuthData.mobile3,
-                                            null,
-                                            AuthData.email2,
-                                            AuthData.email3,
-                                            context,
-                                          );
 
-                                          Snacksbar.showCustomSucessSnackbar(context,"Remove Sucessfully");
+                                        AuthData.UpdateProfile(
+                                          AuthData.regMobileNumber,
+                                          AuthData.regFullName,
+                                          AuthData.mobile1,
+                                          AuthData.mobile2,
+                                          AuthData.mobile3,
+                                          null,
+                                          AuthData.email2,
+                                          AuthData.email3,
+                                          context,
+                                        );
+                                        setState(() {
+
+                                          if (valueType == 'value') {
+                                            AuthData.email1 = '';
+                                          } else if (valueType == 'value1') {
+                                            AuthData.email2 = '';
+                                          } else if (valueType == 'value2') {
+                                            AuthData.email3 = '';
+                                          }
                                         });
+
+                                        Snacksbar.showCustomSucessSnackbar(context,"Removed Sucessfully");
+
 
                                       } else if (valueType == 'value1') {
                                         setState(() {
@@ -441,8 +505,17 @@ class _Profile2State extends State<Profile2> with SingleTickerProviderStateMixin
                                             AuthData.email3,
                                             context,
                                           );
+                                          setState(() {
 
-                                          Snacksbar.showCustomSucessSnackbar(context,"Remove Sucessfully");
+                                            if (valueType == 'value') {
+                                              AuthData.email1 = '';
+                                            } else if (valueType == 'value1') {
+                                              AuthData.email2 = '';
+                                            } else if (valueType == 'value2') {
+                                              AuthData.email3 = '';
+                                            }
+                                          });
+                                          Snacksbar.showCustomSucessSnackbar(context,"Removed Sucessfully");
                                         });
 
                                       } else if (valueType == 'value2') {
@@ -458,7 +531,17 @@ class _Profile2State extends State<Profile2> with SingleTickerProviderStateMixin
                                             null,
                                             context,
                                           );
-                                          Snacksbar.showCustomSucessSnackbar(context,"Remove Sucessfully");
+                                          setState(() {
+
+                                            if (valueType == 'value') {
+                                              AuthData.email1 = '';
+                                            } else if (valueType == 'value1') {
+                                              AuthData.email2 = '';
+                                            } else if (valueType == 'value2') {
+                                              AuthData.email3 = '';
+                                            }
+                                          });
+                                          Snacksbar.showCustomSucessSnackbar(context,"Removed Sucessfully");
                                         });
 
                                       }
@@ -482,9 +565,15 @@ class _Profile2State extends State<Profile2> with SingleTickerProviderStateMixin
                     ),
                   if (!value.contains('@'))
                     GestureDetector(
-                      onTap: () {
-                        showeditmobileprofile(context, '', '', valueType);
+                      onTap: () async {
+                        showeditMobileprofile(context, '', '', valueType);
+                        AuthData.type=valueType;
+                        await Future.delayed(Duration(seconds: time));
+                        _updateMobileNumber();
+
                       },
+
+
                       child: const Padding(
                         padding: EdgeInsets.all(0),
                         child: Icon(Icons.edit_note, color: Colors.deepOrange),
@@ -528,7 +617,17 @@ class _Profile2State extends State<Profile2> with SingleTickerProviderStateMixin
                                             AuthData.email3,
                                             context,
                                           );
-                                          Snacksbar.showCustomSucessSnackbar(context,"Remove Sucessfully");
+                                          setState(() {
+
+                                            if (valueType == 'value') {
+                                              AuthData.mobile1 = '';
+                                            } else if (valueType == 'value1') {
+                                              AuthData.mobile2 = '';
+                                            } else if (valueType == 'value2') {
+                                              AuthData.mobile3 = '';
+                                            }
+                                          });
+                                          Snacksbar.showCustomSucessSnackbar(context,"Removed Sucessfully");
                                         });
 
                                       } else if (valueType == 'value1') {
@@ -544,7 +643,17 @@ class _Profile2State extends State<Profile2> with SingleTickerProviderStateMixin
                                             AuthData.email3,
                                             context,
                                           );
-                                          Snacksbar.showCustomSucessSnackbar(context,"Remove Sucessfully");
+                                          setState(() {
+
+                                            if (valueType == 'value') {
+                                              AuthData.mobile1 = '';
+                                            } else if (valueType == 'value1') {
+                                              AuthData.mobile2 = '';
+                                            } else if (valueType == 'value2') {
+                                              AuthData.mobile3 = '';
+                                            }
+                                          });
+                                          Snacksbar.showCustomSucessSnackbar(context,"Removed Sucessfully");
                                         });
 
                                       } else if (valueType == 'value2') {
@@ -560,8 +669,17 @@ class _Profile2State extends State<Profile2> with SingleTickerProviderStateMixin
                                             AuthData.email3,
                                             context,
                                           );
+                                          setState(() {
 
-                                          Snacksbar.showCustomSucessSnackbar(context,"Remove Sucessfully");
+                                            if (valueType == 'value') {
+                                              AuthData.mobile1 = '';
+                                            } else if (valueType == 'value1') {
+                                              AuthData.mobile2 = '';
+                                            } else if (valueType == 'value2') {
+                                              AuthData.mobile3 = '';
+                                            }
+                                          });
+                                          Snacksbar.showCustomSucessSnackbar(context,"Removed Sucessfully");
                                         });
 
                                       }
